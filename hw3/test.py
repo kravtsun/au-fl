@@ -82,11 +82,11 @@ class RegExp:
         maybe_regexp = RegExp.maybe_regexp
         or_regexp = RegExp.or_regexp
         exp_regexp = "e" + sign_regexp + num_regexp
+        maybe_exp = maybe_regexp(exp_regexp)
 
-        with_integer_part = RegExp.maybe_regexp("-") + num_regexp + maybe_regexp(point_regexp + num_regexp + "*") + maybe_regexp(exp_regexp)
-        without_integer_part = point_regexp + "[0-9]+" + maybe_regexp(exp_regexp)
+        with_integer_part = RegExp.maybe_regexp("-") + num_regexp + maybe_regexp(point_regexp + num_regexp + "*") + maybe_exp
+        without_integer_part = point_regexp + "[0-9][0-9]*" + maybe_exp
         res = or_regexp(with_integer_part, without_integer_part)
-
         return res
 
     @staticmethod
@@ -118,11 +118,11 @@ if __name__ == '__main__':
               ("2c", RegExp.list_regexp())
               ]
     pass_tests = [["a", "_a", "A", "a_b", "iDeNt", "_i_D_", "__agent007__", "_13", "e2_e4"],
-                  ["0", "-0", "10", "0.0", "0.1e0", "0.10010e+1", "10e-123", ".1"],
+                  ["0", "-0", "10", "0.0", "0.1e0", "0.10010e+1", "10e-123", ".1", ".5e+10"],
                   ["[]", "[1]", "[1;1;2;3;5;8]", "[ ]", "[ 4; 8; 15; 16 ; 23; 42]"]
                   ]
     fail_tests = [["", "1", "1st", "!myVar!"],
-                  ["01", "+.2", "e, e.", ".", ""],
+                  ["01", "+.2", "e, e.", ".", "", ".e", ".e-123"],
                   ["][", "[[]]", "[1;2;3", "[a]", "[1,2,3]", "[1;2;]", "[1; 23 4; 5]", "[;1]"]
                   ]
 
