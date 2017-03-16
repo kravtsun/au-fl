@@ -1,4 +1,5 @@
 #!/usr/bin/python2
+# -*- coding: utf-8 -*-
 import reCompiler
 
 class Task():
@@ -8,11 +9,23 @@ class Task():
         self.pass_tests = pass_tests
         self.fail_tests = fail_tests
 
+    @staticmethod
+    def replace_bad_labels(filename):
+        import subprocess
+        pairs = [(u"None", u"ε"),
+                 ("\\[ab\\]","a,b"),
+                 ("\\\\d", "[0-9]"),
+                 ("\\[+---\\]", "+,-")]
+        for first, second in pairs:
+            sed_command = ["sed", "-s", "-i", u"s/" + first + "/" + second + "/", filename]
+            subprocess.call(sed_command)
+
     def work_automata(self, name, fa, suffix):
         import os
         filename = name + "_" + suffix + ".gv"
         with open(filename, "w") as f:
             f.write(fa.toDotString())
+        Task.replace_bad_labels(filename)
         png_filename = name + "_" + suffix + ".png"
         dot_command = " ".join(["dot", "-Tpng", filename, ">", png_filename])
         os.system(dot_command)
