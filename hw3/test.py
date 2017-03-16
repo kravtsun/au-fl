@@ -63,8 +63,8 @@ class RegExp:
         sign_regexp = "(+|-)?"
 
         num_regexp = RegExp.num_regexp()
-        # check on num_regexp.
-        Task("num", num_regexp, ["1", "0", "123"], ["a", "01", "001"]).run()
+        # check on valid num_regexp.
+        # Task("num", num_regexp, ["1", "0", "123"], ["a", "01", "001"]).run()
 
         maybe_regexp = RegExp.maybe_regexp
         or_regexp = RegExp.or_regexp
@@ -94,7 +94,6 @@ def print_regexp(s):
 
 
 if __name__ == '__main__':
-    # func(*p)
     first = [("1a", "(a|b)*ab(a|b)*|(a|b)*a|b*"),
              ("1b", "(a|b)*(ab|ba)(a|b)*|a*|b*")]
 
