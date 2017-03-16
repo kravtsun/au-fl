@@ -81,14 +81,14 @@ class RegExp:
         space_regexp = "\\s*"
         split_regexp = space_regexp + ";" + space_regexp
         num_regexp = RegExp.num_regexp()
-        return "\\[" + space_regexp + RegExp.maybe_regexp(num_regexp) + RegExp.enbrace(split_regexp + num_regexp) + "*" + space_regexp + "\\]"
+        return "\\[" + space_regexp + RegExp.maybe_regexp(num_regexp + RegExp.maybe_regexp(RegExp.enbrace(split_regexp + num_regexp) + "*")) + space_regexp + "\\]"
 
 def print_regexp(s):
     if s is None or len(s) == 0:
         return
     res = ""
-    for i in range(len(s)-1):
-        if (s[i] != '\\' or s[i+1] == 's'):
+    for i in range(len(s)):
+        if s[i] != '\\' or (i + 1 < len(s) and s[i+1] == 's'):
             res += s[i]
     print res
 
@@ -110,7 +110,7 @@ if __name__ == '__main__':
                   ]
     fail_tests = [["", "1", "1st", "!myVar!"],
                   ["01", "+.2", "e, e.", ".", ""],
-                  ["][", "[[]]", "[1;2;3", "[a]", "[1,2,3]", "[1;2;]", "[1; 23 4; 5]"]
+                  ["][", "[[]]", "[1;2;3", "[a]", "[1,2,3]", "[1;2;]", "[1; 23 4; 5]", "[;1]"]
                   ]
 
     for i, p in enumerate(second):
