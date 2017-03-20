@@ -1,4 +1,4 @@
-%x lineno
+%option yylineno
 %x comment
 %{
 #include <cctype>
@@ -6,12 +6,12 @@
 #include <string>
 #include <map>
 
-static int num_pages = 0, num_lines = 0, num_chars = 0;
+static int num_pages = 0, num_chars = 0;
 static void debug_counters()
 {
     int start = num_chars - yyleng;
     int finish = start + yyleng - 1;
-    printf("%d, %d, %d", num_lines, start, finish);
+    printf("%d, %d, %d", yylineno - 1, start, finish);
     printf("); ");
 }
 
@@ -64,13 +64,13 @@ SPECIALS    "+"|"−"|"∗"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
 SPLIT   "("|")"|";"
 %%
 
-<comment>{LINESPLIT} num_chars += yyleng; ++num_lines; BEGIN(INITIAL);
+<comment>{LINESPLIT} num_chars += yyleng; BEGIN(INITIAL);
 <comment>.           ++num_chars;
 "//"            num_chars += 2; BEGIN(comment);
 
 <*>{FF}         update_num_chars(); ++num_pages;
-<*>{LINESPLIT}  update_num_chars(); ++num_lines;   // check if CR and LF does not fire CR and LF separately.
-<*>{SPACE}      update_num_chars();                // check if it doesn't spoil FF.
+<*>{LINESPLIT}  update_num_chars();   // check if CR and LF does not fire CR and LF separately.
+<*>{SPACE}      update_num_chars();   // check if it doesn't spoil FF.
 
 {KEYWORDS}      {
     update_num_chars(); 
@@ -114,7 +114,7 @@ int main()
        yylex();
        printf("\n### END LEXER ###\n");
        printf("PAGES: %d\n", num_pages);
-       printf("LINES: %d\n", num_lines);
+       printf("LINES: %d\n", yylineno - 1);
        printf("CHARS: %d\n", num_chars);
        return 0;
    }
