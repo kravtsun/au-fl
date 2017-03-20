@@ -14,15 +14,11 @@ $(EXEC): $(LEXER_SRC)
 $(LEXER_SRC): $(SPEC_FILE)
 	$(FLEX) -o $(LEXER_SRC) $(SPEC_FILE)
 
-run: $(EXEC)
-	echo $$1
-	# $(EXEC) < $$0
-
 test: $(EXEC)
 	for f in $(TEST_DIR)/*.l; do \
 		name="$${f%$(INPUT_EXT)}";\
 		check="$$name".a;\
-		$(EXEC) < $${f} | diff - "$$check" > /dev/null || echo "TEST $$f failed!";\
+		$(EXEC) < $${f} | diff - "$$check" > /dev/null || echo "TEST $$f failed!" && $(EXEC) < $${f} > $${name}.out;\
 	done;
 
 clean:

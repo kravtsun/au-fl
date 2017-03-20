@@ -2,18 +2,22 @@
 %x comment
 %{
 #include <cctype>
+#include <cmath>
 #include <string>
 #include <map>
 
 static int num_pages = 0, num_lines = 0, num_chars = 0;
 static void debug_counters()
 {
-    printf("%d, %d, %d", num_pages, num_lines, num_chars-1);
+    int start = num_chars - yyleng;
+    int finish = start + yyleng - 1;
+    printf("%d, %d, %d", num_lines, start, finish);
     printf("); ");
 }
 
 static void update_num_chars()
 {
+    // printf("(%s, %d) ###\n", yytext, yyleng);
     num_chars += yyleng;
 }
 
@@ -33,6 +37,12 @@ static std::map<std::string, std::string> special_names = {
     {"||", "Or"},
 };
 
+static std::map<std::string, std::string> split_names = {
+    {"(",  "LParent"},
+    {")",  "RParent"},
+    {";",  "Colon"}
+};
+
 %}
 
 CR      \x0D
@@ -45,12 +55,14 @@ FF      \x0C
 SPACE   {LINESPLIT}|{SP}|{HT}|{FF}
 
 KEYWORDS if|then|else|while|do|read|write|begin|end
-IDENT   ([:alpha:]|_)([:alnum:]|_)*
+IDENT   [[:alpha:]_][[:alnum:]_]*
 SPECIALS    "+"|"−"|"∗"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
+SPLIT   "("|")"|";"
 %%
 
 <comment>{LINESPLIT} num_chars += yyleng; ++num_lines; BEGIN(INITIAL);
 <comment>.           ++num_chars;
+"//"            num_chars += 2; BEGIN(comment);
 
 <*>{FF}         update_num_chars(); ++num_pages;
 <*>{LINESPLIT}  update_num_chars(); ++num_lines;   // check if CR and LF does not fire CR and LF separately.
@@ -77,7 +89,12 @@ SPECIALS    "+"|"−"|"∗"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
     debug_counters();
     }
 
-"//"            num_chars += 2; BEGIN(comment);
+{SPLIT}         {
+    update_num_chars();
+    printf("%s(", split_names[yytext].c_str());
+    debug_counters();
+    }
+
 .               update_num_chars();
 
 %%
