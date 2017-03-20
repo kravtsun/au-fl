@@ -1,0 +1,3 @@
+[submodule "lib/pyfsa"]
+	path = lib/pyfsa
+	url = https://github.com/osteele/pyfsa.git
