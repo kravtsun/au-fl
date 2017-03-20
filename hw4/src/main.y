@@ -18,7 +18,6 @@ static int update_num_chars()
         cur_line = yylineno;
         num_chars = 0;
     }
-    // printf("(%s, %d) ###\n", yytext, yyleng);
     num_chars += yyleng;
     return num_chars;
 }
@@ -81,8 +80,9 @@ SIGN 	    ("+"|"-")
 NUMBER	    (0|[1-9][0-9]*)
 EXPONENT    (e{SIGN}?{NUMBER})
 RATIONAL    "-"?{NUMBER}("."[0-9]*)?{EXPONENT}?|"."[0-9]+{EXPONENT}?
-KEYWORDS if|then|else|while|do|read|write|begin|end
-IDENT   [[:alpha:]_][[:alnum:]_]*
+BOOLEAN     false|true
+KEYWORDS    if|then|else|while|do|read|write|begin|end
+IDENT       [[:alpha:]_][[:alnum:]_]*
 SPECIALS    "+"|"−"|"∗"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
 SPLIT       "("|")"|";"
 NOT_SPLIT   [^[:space:]();\n\r]
@@ -99,30 +99,20 @@ TOKEN_END   {SPLIT}|{SPACE}
     print_token(s, "", false, "KW_");
     free(s);
     }
+{BOOLEAN}/{TOKEN_END}   print_token("Bool", yytext, false);
 
-{IDENT}/{TOKEN_END}         {
-    print_token("Ident", yytext, true);
-    }
+{IDENT}/{TOKEN_END}     print_token("Ident", yytext, true);
 
-{SPECIALS}/{TOKEN_END}      {
-    print_token("Op", special_names[yytext], false);
-    }
+{SPECIALS}/{TOKEN_END}  print_token("Op", special_names[yytext], false);
 
-{RATIONAL}/{TOKEN_END}      {
-    print_token("Num", yytext, false);
-    }
+{RATIONAL}/{TOKEN_END}  print_token("Num", yytext, false);
 
-{SPLIT}         {
-    print_token(split_names[yytext]);
-    }
+{SPLIT}                 print_token(split_names[yytext]);
 
 <INITIAL>{SPACE}    update_num_chars();
 <INITIAL>.          BEGIN(unknown); yyless(0);
 
-<unknown>{NOT_SPLIT}+   {
-    print_token("Unknown", yytext, true);
-    BEGIN(INITIAL);
-    }
+<unknown>{NOT_SPLIT}+   print_token("Unknown", yytext, true); BEGIN(INITIAL);
 
 %%
 int main()
