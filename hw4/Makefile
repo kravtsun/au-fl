@@ -3,13 +3,13 @@ SRC_DIR=src
 TEST_DIR=test
 SPEC_FILE=$(SRC_DIR)/main.y
 LEXER_SRC=$(SRC_DIR)/lex.yy.cc
-EXEC=bin/a.out
+EXEC=./llexer
 INPUT_EXT=.l
 
 default: $(EXEC)
 
 $(EXEC): $(LEXER_SRC)
-	g++ -O0 -ggdb -std=c++11 $(LEXER_SRC) -o $(EXEC) -lfl
+	g++ -std=c++11 $(LEXER_SRC) -o $(EXEC) -lfl
 
 $(LEXER_SRC): $(SPEC_FILE)
 	$(FLEX) -o $(LEXER_SRC) $(SPEC_FILE)
