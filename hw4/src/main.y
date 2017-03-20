@@ -1,11 +1,15 @@
 %x lineno
 %x comment
 %{
-#include <ctype.h>
+#include <cctype>
+#include <string>
+#include <map>
+
 static int num_pages = 0, num_lines = 0, num_chars = 0;
 static void debug_counters()
 {
-    printf("%d, %d, %d", num_pages, num_lines, num_chars);
+    printf("%d, %d, %d", num_pages, num_lines, num_chars-1);
+    printf("); ");
 }
 
 static void update_num_chars()
@@ -13,11 +17,22 @@ static void update_num_chars()
     num_chars += yyleng;
 }
 
-static const char *get_special_def(char *special)
-{
+static std::map<std::string, std::string> special_names = {
+    {"+",  "Plus"},
+    {"−",  "Minus"},
+    {"∗",  "Mult"},
+    {"/",  "Divide"},
+    {"%",  "Percent"},
+    {"==", "Eq"},
+    {"!=", "Neg"},
+    {">",  "Gt"},
+    {">=", "Ge"},
+    {"<",  "Lt"},
+    {"<=", "Le"},
+    {"&&", "And"},
+    {"||", "Or"},
+};
 
-}
-//static char [][];
 %}
 
 CR      \x0D
@@ -31,9 +46,9 @@ SPACE   {LINESPLIT}|{SP}|{HT}|{FF}
 
 KEYWORDS if|then|else|while|do|read|write|begin|end
 IDENT   ([:alpha:]|_)([:alnum:]|_)*
-
-
+SPECIALS    "+"|"−"|"∗"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
 %%
+
 <comment>{LINESPLIT} num_chars += yyleng; ++num_lines; BEGIN(INITIAL);
 <comment>.           ++num_chars;
 
@@ -44,22 +59,26 @@ IDENT   ([:alpha:]|_)([:alnum:]|_)*
 {KEYWORDS}      {
     update_num_chars(); 
     char *s = strdup(yytext); 
-    s[0] = (char)tolower(s[0]);
+    s[0] = (char)toupper(s[0]);
     printf("KW_%s(", s);
     free(s);
     debug_counters();
-    printf(");");
     }
 
 {IDENT}         {
     update_num_chars(); 
     printf("Ident(\"%s\", ", yytext);
     debug_counters();
-    printf(");");
+    }
+
+{SPECIALS}      {
+    update_num_chars();
+    printf("Op(%s, ", special_names[yytext].c_str());
+    debug_counters();
     }
 
 "//"            num_chars += 2; BEGIN(comment);
-.*              update_num_chars();
+.               update_num_chars();
 
 %%
 int main()

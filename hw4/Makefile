@@ -1,7 +1,9 @@
-FLEX=flex -+
-SPEC_FILE=main.y
-LEXER_SRC=lex.yy.cc
-EXEC=./a.out
+FLEX=flex
+SRC_DIR=src
+TEST_DIR=test
+SPEC_FILE=$(SRC_DIR)/main.y
+LEXER_SRC=$(SRC_DIR)/lex.yy.cc
+EXEC=bin/a.out
 INPUT_EXT=.l
 
 default: $(EXEC)
@@ -12,8 +14,12 @@ $(EXEC): $(LEXER_SRC)
 $(LEXER_SRC): $(SPEC_FILE)
 	$(FLEX) -o $(LEXER_SRC) $(SPEC_FILE)
 
+run: $(EXEC)
+	echo $$1
+	# $(EXEC) < $$0
+
 test: $(EXEC)
-	for f in test/*.l; do \
+	for f in $(TEST_DIR)/*.l; do \
 		name="$${f%$(INPUT_EXT)}";\
 		check="$$name".a;\
 		$(EXEC) < $${f} | diff - "$$check" > /dev/null || echo "TEST $$f failed!";\

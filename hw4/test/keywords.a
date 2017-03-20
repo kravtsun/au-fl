@@ -1,0 +1,5 @@
+KW_If(0, 0, 1); KW_Then(0, 0, 6); KW_Else(0, 0, 11); KW_While(0, 0, 17); KW_Do(0, 0, 20); KW_Read(0, 0, 25); KW_Write(0, 0, 31); KW_Begin(0, 0, 37); KW_End(0, 0, 41); 
+### END LEXER ###
+PAGES: 0
+LINES: 1
+CHARS: 43

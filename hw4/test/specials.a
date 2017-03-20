@@ -1,0 +1,5 @@
+Op(Plus, 0, 0, 0); Op(Minus, 0, 0, 4); Op(Mult, 0, 0, 8); Op(Divide, 0, 0, 10); Op(Percent, 0, 0, 12); Op(Eq, 0, 0, 15); Op(Neg, 0, 0, 18); Op(Gt, 0, 0, 20); Op(Ge, 0, 0, 23); Op(Lt, 0, 0, 25); Op(Le, 0, 0, 28); Op(And, 0, 0, 31); Op(Or, 0, 0, 34); 
+### END LEXER ###
+PAGES: 0
+LINES: 1
+CHARS: 36
