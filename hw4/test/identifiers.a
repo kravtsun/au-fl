@@ -1,5 +1,2 @@
 Ident("a", 0, 0, 0); Ident("_a", 0, 2, 3); Ident("A", 0, 5, 5); Ident("a_b", 0, 7, 9); Ident("iDeNt", 0, 11, 15); Ident("_i_D_", 0, 17, 21); Ident("__agent007__", 0, 23, 34); Ident("_13", 0, 36, 38); Ident("e2_e4", 0, 40, 44); 
 ### END LEXER ###
-PAGES: 0
-LINES: 2
-CHARS: 47

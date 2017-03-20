@@ -6,20 +6,42 @@
 #include <cmath>
 #include <string>
 #include <map>
+#include <iostream>
 
-static int num_pages = 0, num_chars = 0;
-static void debug_counters()
-{
-    int start = num_chars - yyleng;
-    int finish = start + yyleng - 1;
-    printf("%d, %d, %d", yylineno - 1, start, finish);
-    printf("); ");
-}
 
-static void update_num_chars()
-{
+static int update_num_chars()
+{   
+    static int num_chars = 0;
+    static int cur_line = -1;
+    if (yylineno != cur_line)
+    {
+        cur_line = yylineno;
+        num_chars = 0;
+    }
     // printf("(%s, %d) ###\n", yytext, yyleng);
     num_chars += yyleng;
+    return num_chars;
+}
+
+static void print_token(const std::string &name,
+                        const std::string &str = "",
+                        bool use_quotes = false,
+                        const std::string &prefix="")
+{
+    std::cout << prefix << name << "(";
+
+    if (!str.empty())
+    {
+        if (use_quotes)
+            std::cout << '"' << str << "\", ";
+        else
+            std::cout << str << ", ";
+    }
+
+    int num_chars = update_num_chars();
+    int start = num_chars - yyleng;
+    int finish = start + yyleng - 1;
+    std::cout << yylineno - 1 << ", " << start << ", " << finish << "); ";
 }
 
 static std::map<std::string, std::string> special_names = {
@@ -67,52 +89,38 @@ NOT_SPLIT   [^[:space:]();\n\r]
 TOKEN_END   {SPLIT}|{SPACE}
 %%
 
-<comment>{LINESPLIT} num_chars += yyleng; BEGIN(INITIAL);
-<comment>.           ++num_chars;
-"//"            num_chars += 2; BEGIN(comment);
+<comment>{LINESPLIT} update_num_chars(); BEGIN(INITIAL);
+<comment>.           update_num_chars();
+"//"                 update_num_chars(); BEGIN(comment);
 
 {KEYWORDS}/{TOKEN_END}      {
-    update_num_chars(); 
     char *s = strdup(yytext); 
     s[0] = (char)toupper(s[0]);
-    printf("KW_%s(", s);
+    print_token(s, "", false, "KW_");
     free(s);
-    debug_counters();
     }
 
 {IDENT}/{TOKEN_END}         {
-    update_num_chars(); 
-    printf("Ident(\"%s\", ", yytext);
-    debug_counters();
+    print_token("Ident", yytext, true);
     }
 
 {SPECIALS}/{TOKEN_END}      {
-    update_num_chars();
-    printf("Op(%s, ", special_names[yytext].c_str());
-    debug_counters();
+    print_token("Op", special_names[yytext], false);
     }
 
 {RATIONAL}/{TOKEN_END}      {
-    // printf("%s ", yytext);
-    update_num_chars();
-    printf("Num(%s, ", yytext);
-    debug_counters();
+    print_token("Num", yytext, false);
     }
 
 {SPLIT}         {
-    update_num_chars();
-    printf("%s(", split_names[yytext].c_str());
-    debug_counters();
+    print_token(split_names[yytext]);
     }
 
-<INITIAL>{SPACE}    update_num_chars(); if (yytext[0] == '\f') ++num_pages;
-
+<INITIAL>{SPACE}    update_num_chars();
 <INITIAL>.          BEGIN(unknown); yyless(0);
 
 <unknown>{NOT_SPLIT}+   {
-    update_num_chars(); 
-    printf("Unknown(\"%s\", ", yytext);
-    debug_counters();
+    print_token("Unknown", yytext, true);
     BEGIN(INITIAL);
     }
 
@@ -120,9 +128,6 @@ TOKEN_END   {SPLIT}|{SPACE}
 int main()
    {
        yylex();
-       printf("\n### END LEXER ###\n");
-       printf("PAGES: %d\n", num_pages);
-       printf("LINES: %d\n", yylineno - 1);
-       printf("CHARS: %d\n", num_chars);
+       std::cout << "\n### END LEXER ###\n";
        return 0;
    }

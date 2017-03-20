@@ -1,5 +1,2 @@
-Unknown("1st", 0, 0, 2); LParent(0, 4, 4); Unknown("!myVar!", 0, 5, 11); RParent(0, 12, 12); Unknown("23wfsdg", 0, 14, 20); Colon(0, 21, 21); Unknown("#", 0, 23, 23); RParent(0, 24, 24); Unknown("$@&", 0, 25, 27); LParent(0, 28, 28); Unknown("@#$%", 0, 29, 32); Unknown("12adf", 1, 34, 38); Unknown("...", 1, 40, 42); Unknown("++", 1, 44, 45); Unknown("--||", 1, 47, 50); 
+Unknown("1st", 0, 0, 2); LParent(0, 4, 4); Unknown("!myVar!", 0, 5, 11); RParent(0, 12, 12); Unknown("23wfsdg", 0, 14, 20); Colon(0, 21, 21); Unknown("#", 0, 23, 23); RParent(0, 24, 24); Unknown("$@&", 0, 25, 27); LParent(0, 28, 28); Unknown("@#$%", 0, 29, 32); Unknown("12adf", 1, 1, 5); Unknown("...", 1, 7, 9); Unknown("++", 1, 11, 12); Unknown("--||", 1, 14, 17); 
 ### END LEXER ###
-PAGES: 0
-LINES: 2
-CHARS: 52

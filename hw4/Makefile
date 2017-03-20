@@ -9,7 +9,7 @@ INPUT_EXT=.l
 default: $(EXEC)
 
 $(EXEC): $(LEXER_SRC)
-	g++ -std=c++11 $(LEXER_SRC) -o $(EXEC) -lfl
+	g++ -O0 -ggdb -std=c++11 $(LEXER_SRC) -o $(EXEC) -lfl
 
 $(LEXER_SRC): $(SPEC_FILE)
 	$(FLEX) -o $(LEXER_SRC) $(SPEC_FILE)
