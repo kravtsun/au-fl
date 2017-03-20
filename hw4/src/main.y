@@ -1,5 +1,6 @@
 %option yylineno
 %x comment
+%x unknown
 %{
 #include <cctype>
 #include <cmath>
@@ -61,18 +62,16 @@ RATIONAL    "-"?{NUMBER}("."[0-9]*)?{EXPONENT}?|"."[0-9]+{EXPONENT}?
 KEYWORDS if|then|else|while|do|read|write|begin|end
 IDENT   [[:alpha:]_][[:alnum:]_]*
 SPECIALS    "+"|"−"|"∗"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
-SPLIT   "("|")"|";"
+SPLIT       "("|")"|";"
+NOT_SPLIT   [^[:space:]();\n\r]
+TOKEN_END   {SPLIT}|{SPACE}
 %%
 
 <comment>{LINESPLIT} num_chars += yyleng; BEGIN(INITIAL);
 <comment>.           ++num_chars;
 "//"            num_chars += 2; BEGIN(comment);
 
-<*>{FF}         update_num_chars(); ++num_pages;
-<*>{LINESPLIT}  update_num_chars();   // check if CR and LF does not fire CR and LF separately.
-<*>{SPACE}      update_num_chars();   // check if it doesn't spoil FF.
-
-{KEYWORDS}      {
+{KEYWORDS}/{TOKEN_END}      {
     update_num_chars(); 
     char *s = strdup(yytext); 
     s[0] = (char)toupper(s[0]);
@@ -81,15 +80,22 @@ SPLIT   "("|")"|";"
     debug_counters();
     }
 
-{IDENT}         {
+{IDENT}/{TOKEN_END}         {
     update_num_chars(); 
     printf("Ident(\"%s\", ", yytext);
     debug_counters();
     }
 
-{SPECIALS}      {
+{SPECIALS}/{TOKEN_END}      {
     update_num_chars();
     printf("Op(%s, ", special_names[yytext].c_str());
+    debug_counters();
+    }
+
+{RATIONAL}/{TOKEN_END}      {
+    // printf("%s ", yytext);
+    update_num_chars();
+    printf("Num(%s, ", yytext);
     debug_counters();
     }
 
@@ -99,14 +105,16 @@ SPLIT   "("|")"|";"
     debug_counters();
     }
 
-{RATIONAL}      {
-    // printf("%s ", yytext);
-    update_num_chars();
-    printf("Num(%s, ", yytext);
-    debug_counters();
-    }
+<INITIAL>{SPACE}    update_num_chars(); if (yytext[0] == '\f') ++num_pages;
 
-.               update_num_chars(); ECHO;
+<INITIAL>.          BEGIN(unknown); yyless(0);
+
+<unknown>{NOT_SPLIT}+   {
+    update_num_chars(); 
+    printf("Unknown(\"%s\", ", yytext);
+    debug_counters();
+    BEGIN(INITIAL);
+    }
 
 %%
 int main()
