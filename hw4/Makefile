@@ -22,6 +22,6 @@ test: $(EXEC)
 	done;
 
 clean:
-	rm -f $(EXEC) $(LEXER_SRC)
+	rm -f $(EXEC) $(LEXER_SRC) test/*.out
 
 .PHONY: test clean

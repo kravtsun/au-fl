@@ -54,6 +54,10 @@ HT      \x09
 FF      \x0C
 SPACE   {LINESPLIT}|{SP}|{HT}|{FF}
 
+SIGN 	    ("+"|"-")
+NUMBER	    (0|[1-9][0-9]*)
+EXPONENT    (e{SIGN}?{NUMBER})
+RATIONAL    "-"?{NUMBER}("."[0-9]*)?{EXPONENT}?|"."[0-9]+{EXPONENT}?
 KEYWORDS if|then|else|while|do|read|write|begin|end
 IDENT   [[:alpha:]_][[:alnum:]_]*
 SPECIALS    "+"|"−"|"∗"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
@@ -95,7 +99,14 @@ SPLIT   "("|")"|";"
     debug_counters();
     }
 
-.               update_num_chars();
+{RATIONAL}      {
+    // printf("%s ", yytext);
+    update_num_chars();
+    printf("Num(%s, ", yytext);
+    debug_counters();
+    }
+
+.               update_num_chars(); ECHO;
 
 %%
 int main()
