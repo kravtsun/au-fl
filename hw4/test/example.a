@@ -1,2 +1,1 @@
 KW_Read(0, 0, 3); Ident("x", 0, 5, 5); Colon(0, 6, 6); KW_If(0, 8, 9); Ident("y", 0, 11, 11); Op(Plus, 0, 13, 13); Num(1, 0, 15, 15); Op(Eq, 0, 17, 18); Ident("x", 0, 20, 20); KW_Then(0, 22, 25); KW_Write(0, 27, 31); Ident("y", 0, 33, 33); KW_Else(0, 35, 38); KW_Write(0, 40, 44); Ident("x", 0, 46, 46); 
-### END LEXER ###

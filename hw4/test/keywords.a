@@ -1,2 +1,1 @@
 KW_If(0, 0, 1); KW_Then(0, 3, 6); KW_Else(0, 8, 11); KW_While(0, 13, 17); KW_Do(0, 19, 20); KW_Read(0, 22, 25); KW_Write(0, 27, 31); KW_Begin(0, 33, 37); KW_End(0, 39, 41); 
-### END LEXER ###

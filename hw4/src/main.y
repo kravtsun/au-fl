@@ -118,6 +118,5 @@ TOKEN_END   {SPLIT}|{SPACE}
 int main()
    {
        yylex();
-       std::cout << "\n### END LEXER ###\n";
        return 0;
    }
