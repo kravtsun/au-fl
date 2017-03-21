@@ -1,5 +1,7 @@
-// first comment
+a // first comment
 
-// second comment
+b// second comment
 
 // comment with // \\//
+
+/// triple

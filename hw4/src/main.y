@@ -13,12 +13,16 @@ static int update_num_chars()
 {   
     static int num_chars = 0;
     static int cur_line = -1;
-    if (yylineno != cur_line)
+    const bool end_of_line = yytext[yyleng - 1] == '\r' ||
+                             yytext[yyleng - 1] == '\n';
+
+    if (!end_of_line && yylineno != cur_line)
     {
         cur_line = yylineno;
         num_chars = 0;
     }
     num_chars += yyleng;
+    // printf("\nDEBUG: %s: %d\n", yytext, num_chars);
     return num_chars;
 }
 
@@ -32,14 +36,20 @@ static void print_token(const std::string &name,
     if (!str.empty())
     {
         if (use_quotes)
+        {
             std::cout << '"' << str << "\", ";
+        }
         else
+        {
             std::cout << str << ", ";
+        }
     }
 
+    // if (name == "Comment") printf("\nBefore: %d\n", num_chars);
     int num_chars = update_num_chars();
-    int start = num_chars - yyleng;
-    int finish = start + yyleng - 1;
+    // if (name == "Comment") printf("\nAfter: %d\n", num_chars);
+    int finish = num_chars - 1;
+    int start = finish - yyleng + 1;
     std::cout << yylineno - 1 << ", " << start << ", " << finish << "); ";
 }
 
@@ -76,6 +86,7 @@ HT      \x09
 FF      \x0C
 SPACE   {LINESPLIT}|{SP}|{HT}|{FF}
 
+COMMENTS    "//"
 SIGN 	    ("+"|"-")
 NUMBER	    (0|[1-9][0-9]*)
 EXPONENT    (e{SIGN}?{NUMBER})
@@ -86,12 +97,12 @@ IDENT       [[:alpha:]_][[:alnum:]_]*
 SPECIALS    "+"|"−"|"∗"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
 SPLIT       "("|")"|";"
 NOT_SPLIT   [^[:space:]();\n\r]
-TOKEN_END   {SPLIT}|{SPACE}
+TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
 %%
 
-<comment>{LINESPLIT} update_num_chars(); BEGIN(INITIAL);
-<comment>.           update_num_chars();
-"//"                 update_num_chars(); BEGIN(comment);
+{COMMENTS}[^\n\r]*     {
+    char *s = strdup( yytext ); print_token("Comment", s + 2, true); free(s);
+    }
 
 {KEYWORDS}/{TOKEN_END}      {
     char *s = strdup(yytext); 
