@@ -6,13 +6,10 @@
 #include <algorithm>
 #include <memory>
 #include <cassert>
-#include "token.h"
-
-template<typename T>
-void debug(const T &x, const std::string &name="")
-{
-    std::cout << name << x << std::endl;
-}
+#include "op_token.h"
+#include "prim_token.h"
+#include "simple_token.h"
+#include "string_token.h"
 
 #define DEAL_STRINGY(Name) \
     else if (name == #Name)\
@@ -37,11 +34,6 @@ struct Tokenizer {
     void emplace(const std::string &name, const std::string &str, const std::string &prefix,
                  int line, int begin, int end)
     {
-        // debug(name, "name=");
-        // debug(str, "str=");
-        // debug(prefix, "prefix=");
-        // std::cout << std::endl;
-
         if (false);
         DEAL_STRINGY(Comment)
         DEAL_STRINGY(Bool)
@@ -74,7 +66,6 @@ struct Tokenizer {
     void print()
     {
         std::for_each(tokens_.cbegin(), tokens_.cend(), [](std::shared_ptr<Token> p) { std::cout << p->str() << "; "; });
-        // std::cout << std::endl;
     }
     
 private:

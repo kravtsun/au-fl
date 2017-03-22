@@ -1,4 +1,4 @@
-#include "token.h"
+#include "op_token.h"
 
 std::map<std::string, OpType> OpToken::strop = {
     {"+",  Plus   },
@@ -47,3 +47,4 @@ std::map<OpType, std::string> OpToken::opname = {
     {And    , "And"    },
     {Or     , "Or"     }
 };
+
