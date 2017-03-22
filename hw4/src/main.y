@@ -78,20 +78,20 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
     char *s = strdup( yytext ); print_token("Comment", s + 2, true); free(s);
     }
 
-{KEYWORDS}/{TOKEN_END}      {
+{RATIONAL}                          print_token("Num", yytext, false);
+
+{KEYWORDS}/[^[:alpha:]]  {
     char *s = strdup(yytext); 
     s[0] = (char)toupper(s[0]);
     print_token(s, "", false, "KW_");
     free(s);
     }
 
-{BOOLEAN}/{TOKEN_END}    print_token("Bool", yytext, false);
+{BOOLEAN}/[^[:alpha:]]              print_token("Bool", yytext, false);
 
-{IDENT}/{TOKEN_END}                 print_token("Ident", yytext, true);
+{IDENT}                             print_token("Ident", yytext, true);
 
-({SPECIALS})+              print_token("Op", yytext, false);
-
-{RATIONAL}  print_token("Num", yytext, false);
+{SPECIALS}                          print_token("Op", yytext, false);
 
 {SPLIT}                             print_token(split_names[yytext]);
 

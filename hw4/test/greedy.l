@@ -1,0 +1,4 @@
+mywhile
+***
+abccba
+a+b
