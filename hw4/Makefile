@@ -1,4 +1,4 @@
-FLEX=flex
+FLEX=flex -l
 SRC_DIR=src
 TEST_DIR=test
 SPEC_FILE=$(SRC_DIR)/main.y

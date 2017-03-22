@@ -1,1 +1,1 @@
-Op(Plus, 0, 0, 0); Op(Minus, 0, 2, 4); Op(Mult, 0, 6, 8); Op(Divide, 0, 10, 10); Op(Percent, 0, 12, 12); Op(Eq, 0, 14, 15); Op(Neg, 0, 17, 18); Op(Gt, 0, 20, 20); Op(Ge, 0, 22, 23); Op(Lt, 0, 25, 25); Op(Le, 0, 27, 28); Op(And, 0, 30, 31); Op(Or, 0, 33, 34); 
+Op(Plus, 0, 0, 0); Op(Minus, 0, 2, 2); Op(Mult, 0, 4, 4); Op(Divide, 0, 6, 6); Op(Percent, 0, 8, 8); Op(Eq, 0, 10, 11); Op(Neg, 0, 13, 14); Op(Gt, 0, 16, 16); Op(Ge, 0, 18, 19); Op(Lt, 0, 21, 21); Op(Le, 0, 23, 24); Op(And, 0, 26, 27); Op(Or, 0, 29, 30); 

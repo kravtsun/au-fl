@@ -55,8 +55,8 @@ static void print_token(const std::string &name,
 
 static std::map<std::string, std::string> special_names = {
     {"+",  "Plus"},
-    {"−",  "Minus"},
-    {"∗",  "Mult"},
+    {"-",  "Minus"},
+    {"*",  "Mult"},
     {"/",  "Divide"},
     {"%",  "Percent"},
     {"==", "Eq"},
@@ -94,7 +94,7 @@ RATIONAL    "-"?{NUMBER}("."[0-9]*)?{EXPONENT}?|"."[0-9]+{EXPONENT}?
 BOOLEAN     false|true
 KEYWORDS    if|then|else|while|do|read|write|begin|end
 IDENT       [[:alpha:]_][[:alnum:]_]*
-SPECIALS    "+"|"−"|"∗"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
+SPECIALS    "+"|"-"|"*"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
 SPLIT       "("|")"|";"
 NOT_SPLIT   [^[:space:]();\n\r]
 TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
@@ -113,7 +113,6 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
 {BOOLEAN}/{TOKEN_END}   print_token("Bool", yytext, false);
 
 {IDENT}/{TOKEN_END}     print_token("Ident", yytext, true);
-
 {SPECIALS}/{TOKEN_END}  print_token("Op", special_names[yytext], false);
 
 {RATIONAL}/{TOKEN_END}  print_token("Num", yytext, false);
