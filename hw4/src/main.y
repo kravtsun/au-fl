@@ -8,6 +8,8 @@
 #include <map>
 #include <iostream>
 
+#include "tokenizer.h"
+
 
 static int update_num_chars()
 {   
@@ -26,48 +28,36 @@ static int update_num_chars()
     return num_chars;
 }
 
+static Tokenizer tokenizer;
+
 static void print_token(const std::string &name,
                         const std::string &str = "",
                         bool use_quotes = false,
                         const std::string &prefix="")
 {
-    std::cout << prefix << name << "(";
-
-    if (!str.empty())
-    {
-        if (use_quotes)
-        {
-            std::cout << '"' << str << "\", ";
-        }
-        else
-        {
-            std::cout << str << ", ";
-        }
-    }
-
-    // if (name == "Comment") printf("\nBefore: %d\n", num_chars);
+    // std::cout << prefix << name << "(";
     int num_chars = update_num_chars();
-    // if (name == "Comment") printf("\nAfter: %d\n", num_chars);
     int finish = num_chars - 1;
     int start = finish - yyleng + 1;
-    std::cout << yylineno - 1 << ", " << start << ", " << finish << "); ";
+    // std::cout << yylineno - 1 << ", " << start << ", " << finish << "); ";
+    tokenizer.emplace(name, str, prefix, yylineno-1, start, finish);
 }
 
-static std::map<std::string, std::string> special_names = {
-    {"+",  "Plus"},
-    {"-",  "Minus"},
-    {"*",  "Mult"},
-    {"/",  "Divide"},
-    {"%",  "Percent"},
-    {"==", "Eq"},
-    {"!=", "Neg"},
-    {">",  "Gt"},
-    {">=", "Ge"},
-    {"<",  "Lt"},
-    {"<=", "Le"},
-    {"&&", "And"},
-    {"||", "Or"},
-};
+// static std::map<std::string, std::string> special_names = {
+//     {"+",  "Plus"},
+//     {"-",  "Minus"},
+//     {"*",  "Mult"},
+//     {"/",  "Divide"},
+//     {"%",  "Percent"},
+//     {"==", "Eq"},
+//     {"!=", "Neg"},
+//     {">",  "Gt"},
+//     {">=", "Ge"},
+//     {"<",  "Lt"},
+//     {"<=", "Le"},
+//     {"&&", "And"},
+//     {"||", "Or"},
+// };
 
 static std::map<std::string, std::string> split_names = {
     {"(",  "LParent"},
@@ -113,14 +103,14 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
 {BOOLEAN}/{TOKEN_END}   print_token("Bool", yytext, false);
 
 {IDENT}/{TOKEN_END}     print_token("Ident", yytext, true);
-{SPECIALS}/{TOKEN_END}  print_token("Op", special_names[yytext], false);
+{SPECIALS}/{TOKEN_END}  print_token("Op", yytext, false);
 
 {RATIONAL}/{TOKEN_END}  print_token("Num", yytext, false);
 
 {SPLIT}                 print_token(split_names[yytext]);
 
-<INITIAL>{SPACE}    update_num_chars();
-<INITIAL>.          BEGIN(unknown); yyless(0);
+<INITIAL>{SPACE}        update_num_chars();
+<INITIAL>.              BEGIN(unknown); yyless(0);
 
 <unknown>{NOT_SPLIT}+   print_token("Unknown", yytext, true); BEGIN(INITIAL);
 
@@ -128,5 +118,6 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
 int main()
    {
        yylex();
+       tokenizer.print();
        return 0;
    }
