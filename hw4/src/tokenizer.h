@@ -34,32 +34,39 @@ struct Tokenizer {
     void emplace(const std::string &name, const std::string &str, const std::string &prefix,
                  int line, int begin, int end)
     {
-        if (false);
-        DEAL_STRINGY(Comment)
-        DEAL_STRINGY(Bool)
-        DEAL_STRINGY(Ident)
-        DEAL_STRINGY(Op)
-        DEAL_STRINGY(Num)
-        DEAL_STRINGY(Unknown)
-        TOKENIZER_DEAL_SIMPLE(LParent)
-        TOKENIZER_DEAL_SIMPLE(RParent)
-        TOKENIZER_DEAL_SIMPLE(Colon)
-        else if (prefix == "KW_")
+        try
         {
             if (false);
-            TOKENIZER_DEAL_KEYWORD(If)
-            TOKENIZER_DEAL_KEYWORD(Then)
-            TOKENIZER_DEAL_KEYWORD(Else)
-            TOKENIZER_DEAL_KEYWORD(While)
-            TOKENIZER_DEAL_KEYWORD(Do)
-            TOKENIZER_DEAL_KEYWORD(Read)
-            TOKENIZER_DEAL_KEYWORD(Write)
-            TOKENIZER_DEAL_KEYWORD(Begin)
-            TOKENIZER_DEAL_KEYWORD(End)
+            DEAL_STRINGY(Comment)
+            DEAL_STRINGY(Bool)
+            DEAL_STRINGY(Ident)
+            DEAL_STRINGY(Op)
+            DEAL_STRINGY(Num)
+            DEAL_STRINGY(Unknown)
+            TOKENIZER_DEAL_SIMPLE(LParent)
+            TOKENIZER_DEAL_SIMPLE(RParent)
+            TOKENIZER_DEAL_SIMPLE(Colon)
+            else if (prefix == "KW_")
+            {
+                if (false);
+                TOKENIZER_DEAL_KEYWORD(If)
+                TOKENIZER_DEAL_KEYWORD(Then)
+                TOKENIZER_DEAL_KEYWORD(Else)
+                TOKENIZER_DEAL_KEYWORD(While)
+                TOKENIZER_DEAL_KEYWORD(Do)
+                TOKENIZER_DEAL_KEYWORD(Read)
+                TOKENIZER_DEAL_KEYWORD(Write)
+                TOKENIZER_DEAL_KEYWORD(Begin)
+                TOKENIZER_DEAL_KEYWORD(End)
+            }
+            else
+            {
+                throw UnknownTokenException();
+            }
         }
-        else
+        catch (const UnknownTokenException &e)
         {
-            assert(false);
+            tokens_.emplace_back(new UnknownToken (name + ": " + str, line, begin, end));
         }
     }
 

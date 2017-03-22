@@ -6,6 +6,9 @@
 #include <sstream>
 #include <map>
 #include <cassert>
+#include <stdexcept>
+
+struct UnknownTokenException : public std::exception {};
 
 struct Token
 {

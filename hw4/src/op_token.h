@@ -31,6 +31,10 @@ struct OpToken : public Token
     OpToken(const std::string &str, int line, int start, int end)
         : Token(line, start, end)
     {
+        if (strop.find(str) == strop.end())
+        {
+            throw UnknownTokenException();
+        }
         type_ = strop.at(str);
     }
 

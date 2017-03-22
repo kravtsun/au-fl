@@ -43,22 +43,6 @@ static void print_token(const std::string &name,
     tokenizer.emplace(name, str, prefix, yylineno-1, start, finish);
 }
 
-// static std::map<std::string, std::string> special_names = {
-//     {"+",  "Plus"},
-//     {"-",  "Minus"},
-//     {"*",  "Mult"},
-//     {"/",  "Divide"},
-//     {"%",  "Percent"},
-//     {"==", "Eq"},
-//     {"!=", "Neg"},
-//     {">",  "Gt"},
-//     {">=", "Ge"},
-//     {"<",  "Lt"},
-//     {"<=", "Le"},
-//     {"&&", "And"},
-//     {"||", "Or"},
-// };
-
 static std::map<std::string, std::string> split_names = {
     {"(",  "LParent"},
     {")",  "RParent"},
@@ -100,19 +84,21 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
     print_token(s, "", false, "KW_");
     free(s);
     }
-{BOOLEAN}/{TOKEN_END}   print_token("Bool", yytext, false);
 
-{IDENT}/{TOKEN_END}     print_token("Ident", yytext, true);
-{SPECIALS}/{TOKEN_END}  print_token("Op", yytext, false);
+{BOOLEAN}/{TOKEN_END}    print_token("Bool", yytext, false);
 
-{RATIONAL}/{TOKEN_END}  print_token("Num", yytext, false);
+{IDENT}/{TOKEN_END}                 print_token("Ident", yytext, true);
 
-{SPLIT}                 print_token(split_names[yytext]);
+({SPECIALS})+              print_token("Op", yytext, false);
 
-<INITIAL>{SPACE}        update_num_chars();
-<INITIAL>.              BEGIN(unknown); yyless(0);
+{RATIONAL}  print_token("Num", yytext, false);
 
-<unknown>{NOT_SPLIT}+   print_token("Unknown", yytext, true); BEGIN(INITIAL);
+{SPLIT}                             print_token(split_names[yytext]);
+
+<INITIAL>{SPACE}                    update_num_chars();
+<INITIAL>.                          BEGIN(unknown); yyless(0);
+
+<unknown>{NOT_SPLIT}+               print_token("Unknown", yytext, true); BEGIN(INITIAL);
 
 %%
 int main()
