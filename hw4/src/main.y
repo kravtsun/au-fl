@@ -35,11 +35,9 @@ static void print_token(const std::string &name,
                         bool use_quotes = false,
                         const std::string &prefix="")
 {
-    // std::cout << prefix << name << "(";
     int num_chars = update_num_chars();
     int finish = num_chars - 1;
     int start = finish - yyleng + 1;
-    // std::cout << yylineno - 1 << ", " << start << ", " << finish << "); ";
     tokenizer.emplace(name, str, prefix, yylineno-1, start, finish);
 }
 
@@ -68,7 +66,7 @@ RATIONAL    "-"?{NUMBER}("."[0-9]*)?{EXPONENT}?|"."[0-9]+{EXPONENT}?
 BOOLEAN     false|true
 KEYWORDS    if|then|else|while|do|read|write|begin|end
 IDENT       [[:alpha:]_][[:alnum:]_]*
-SPECIALS    "+"|"-"|"*"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"|"**"
+SPECIALS    "+"|"-"|"*"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"|"**"|":="
 SPLIT       "("|")"|";"
 NOT_SPLIT   [^[:space:]();\n\r]
 TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}

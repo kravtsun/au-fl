@@ -1,1 +1,1 @@
-Ident("mywhile", 0, 0, 6); Op(Pow, 1, 0, 1); Op(Pow, 1, 2, 3); Op(Pow, 1, 4, 5); Ident("abccba", 2, 0, 5); Ident("a", 3, 0, 0); Op(Plus, 3, 1, 1); Ident("b", 3, 2, 2); 
+Ident("mywhile", 0, 0, 6); Op(Pow, 1, 0, 1); Op(Pow, 1, 2, 3); Op(Pow, 1, 4, 5); Op(Assign, 2, 0, 1); Op(Eq, 2, 2, 3); Unknown("::==:===", 2, 4, 11); Ident("abccba", 3, 0, 5); Ident("a", 4, 0, 0); Op(Plus, 4, 1, 1); Ident("b", 4, 2, 2); 
