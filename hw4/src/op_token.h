@@ -19,6 +19,7 @@ enum OpType {
     Le     ,
     And    ,
     Or     ,
+    Pow    ,
 };
 
 struct OpToken : public Token 

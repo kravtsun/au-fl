@@ -1,4 +1,4 @@
 mywhile
-***
+******
 abccba
 a+b

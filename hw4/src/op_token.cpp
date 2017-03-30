@@ -13,7 +13,8 @@ std::map<std::string, OpType> OpToken::strop = {
     {"<",  Lt     },
     {"<=", Le     },
     {"&&", And    },
-    {"||", Or     }
+    {"||", Or     },
+    {"**", Pow    }
 };
 
 std::map<OpType, std::string> OpToken::opstr = {
@@ -29,7 +30,8 @@ std::map<OpType, std::string> OpToken::opstr = {
     {Lt     , "<"   },
     {Le     , "<="  },
     {And    , "&&"  },
-    {Or     , "||"  }
+    {Or     , "||"  },
+    {Pow    , "**"  }
 };
 
 std::map<OpType, std::string> OpToken::opname = {
@@ -45,6 +47,7 @@ std::map<OpType, std::string> OpToken::opname = {
     {Lt     , "Lt"     },
     {Le     , "Le"     },
     {And    , "And"    },
-    {Or     , "Or"     }
+    {Or     , "Or"     },
+    {Pow    , "Pow"    }
 };
 

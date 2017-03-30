@@ -18,3 +18,18 @@ SOURCES += \
     src/lex.yy.cc
 
 LIBS += -lfl
+
+DISTFILES += \
+    test/boolean.l \
+    test/comments.l \
+    test/example.l \
+    test/greedy.l \
+    test/identifiers.l \
+    test/keywords.l \
+    test/lonely_star.l \
+    test/one_plus_one.l \
+    test/rational.l \
+    test/specials.l \
+    test/split.l \
+    test/sum.l \
+    test/unknown.l

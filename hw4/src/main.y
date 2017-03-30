@@ -68,7 +68,7 @@ RATIONAL    "-"?{NUMBER}("."[0-9]*)?{EXPONENT}?|"."[0-9]+{EXPONENT}?
 BOOLEAN     false|true
 KEYWORDS    if|then|else|while|do|read|write|begin|end
 IDENT       [[:alpha:]_][[:alnum:]_]*
-SPECIALS    "+"|"-"|"*"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"
+SPECIALS    "+"|"-"|"*"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"|"**"
 SPLIT       "("|")"|";"
 NOT_SPLIT   [^[:space:]();\n\r]
 TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
