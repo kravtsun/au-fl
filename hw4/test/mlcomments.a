@@ -1,0 +1,1 @@
+LParent(0, 0, 0); MLComment("(*(*comment*)", 1, 1, 14); Op(Mult, 0, 3, 3); RParent(0, 4, 4); Ident("before", 2, 0, 5); MLComment("(*comment*)", 3, 6, 17); Ident("after", 2, 8, 12); Ident("before", 3, 0, 5); MLComment("(** first line second third **a***)", 4, 7, 42); Ident("after", 5, 1, 5); MLComment("(*) (*)", 7, 0, 7); MLComment("(**)", 8, 0, 4); 

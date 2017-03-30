@@ -1,5 +1,6 @@
 %option yylineno
 %x comment
+%x mlcomment
 %x unknown
 %{
 #include <cctype>
@@ -28,7 +29,9 @@ static int update_num_chars()
     return num_chars;
 }
 
+static MLCommentToken mltoken{"", -1, -1, -1};
 static Tokenizer tokenizer;
+static bool filter_comments = false;
 
 static void print_token(const std::string &name,
                         const std::string &str = "",
@@ -69,14 +72,43 @@ IDENT       [[:alpha:]_][[:alnum:]_]*
 SPECIALS    "+"|"-"|"*"|"/"|"%"|"=="|"!="|">"|">="|"<"|"<="|"&&"|"||"|"**"|":="
 SPLIT       "("|")"|";"
 NOT_SPLIT   [^[:space:]();\n\r]
+ENDL        [\n\r]
+NOT_ENDL    [^\n\r]
+ML_NOT_ENDL [^\n\r\)]
 TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
 %%
 
-{COMMENTS}[^\n\r]*     {
-    char *s = strdup( yytext ); print_token("Comment", s + 2, true); free(s);
-    }
+{COMMENTS}{NOT_ENDL}*     {
+        char *s = strdup( yytext );
+        if (!filter_comments)
+        {
+            print_token("Comment", s + 2, true);
+        }
+        free(s);
+        }
 
-{RATIONAL}                          print_token("Num", yytext, false);
+
+<INITIAL>"(*" {
+            const int num_chars = update_num_chars();
+            mltoken = MLCommentToken(yytext, yylineno, num_chars - yyleng, num_chars);
+            BEGIN(mlcomment);
+        }
+
+<mlcomment>{ML_NOT_ENDL}*"*"+")" {
+            mltoken += yytext;
+            if (!filter_comments)
+            {
+                tokenizer.emplace(new MLCommentToken(mltoken));
+            }
+            BEGIN(INITIAL);
+        }
+
+<mlcomment>{ML_NOT_ENDL}*{ENDL}|")"+ {
+                mltoken += yytext;
+        }
+
+
+{RATIONAL}  print_token("Num", yytext, false);
 
 {KEYWORDS}/[^[:alpha:]]  {
     char *s = strdup(yytext); 
@@ -99,9 +131,14 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
 <unknown>{NOT_SPLIT}+               print_token("Unknown", yytext, true); BEGIN(INITIAL);
 
 %%
-int main()
-   {
-       yylex();
-       tokenizer.print();
-       return 0;
-   }
+int main(int argc, char **argv)
+{
+    for (int i = 1; i < argc; ++i)
+    {
+        filter_comments |= strcmp(argv[i], "-filter") == 0;
+    }
+
+    yylex();
+    tokenizer.print();
+    return 0;
+}

@@ -32,4 +32,5 @@ DISTFILES += \
     test/specials.l \
     test/split.l \
     test/sum.l \
-    test/unknown.l
+    test/unknown.l \
+    test/mlcomments.l

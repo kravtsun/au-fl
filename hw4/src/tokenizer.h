@@ -31,6 +31,12 @@
 
 struct Tokenizer {
 
+    template<typename ...Args>
+    void emplace(Args... args)
+    {
+        tokens_.emplace_back(args...);
+    }
+
     void emplace(const std::string &name, const std::string &str, const std::string &prefix,
                  int line, int begin, int end)
     {
@@ -38,6 +44,7 @@ struct Tokenizer {
         {
             if (false);
             DEAL_STRINGY(Comment)
+            DEAL_STRINGY(MLComment)
             DEAL_STRINGY(Bool)
             DEAL_STRINGY(Ident)
             DEAL_STRINGY(Op)
