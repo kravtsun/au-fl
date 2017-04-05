@@ -25,11 +25,11 @@ test: $(EXEC)
 	for f in $(TEST_DIR)/*comments.l; do \
 		name="$${f%$(INPUT_EXT)}";\
 		check="$$name".af;\
-		$(EXEC) -filter < $${f} | diff - "$$check" > /dev/null || echo "TEST $$f failed!" && $(EXEC) < $${f} > $${name}.outf;\
+		$(EXEC) -filter < $${f} | diff - "$$check" > /dev/null || echo "TEST $$f failed!" && $(EXEC) -filter < $${f} > $${name}.outf;\
 	done;
 
 
 clean:
-	rm -f $(EXEC) $(LEXER_SRC) test/*.out
+	rm -f $(EXEC) $(LEXER_SRC) test/*.out test/*.outf
 
 .PHONY: test clean

@@ -30,12 +30,12 @@ static int update_num_chars()
 }
 
 static MLCommentToken mltoken{"", -1, -1, -1};
+static int mltoken_level = 0;
 static Tokenizer tokenizer;
 static bool filter_comments = false;
 
 static void print_token(const std::string &name,
                         const std::string &str = "",
-                        bool use_quotes = false,
                         const std::string &prefix="")
 {
     int num_chars = update_num_chars();
@@ -74,7 +74,7 @@ SPLIT       "("|")"|";"
 NOT_SPLIT   [^[:space:]();\n\r]
 ENDL        [\n\r]
 NOT_ENDL    [^\n\r]
-ML_NOT_ENDL [^\n\r\)]
+ML_NOT_ENDL [^\n\r\)(]
 TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
 %%
 
@@ -82,53 +82,64 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
         char *s = strdup( yytext );
         if (!filter_comments)
         {
-            print_token("Comment", s + 2, true);
+            print_token("Comment", s + 2);
         }
         free(s);
         }
 
 
-<INITIAL>"(*" {
+<INITIAL,mlcomment>"(*" {
             const int num_chars = update_num_chars();
-            mltoken = MLCommentToken(yytext, yylineno, num_chars - yyleng, num_chars);
-            BEGIN(mlcomment);
-        }
-
-<mlcomment>{ML_NOT_ENDL}*"*"+")" {
-            mltoken += yytext;
-            if (!filter_comments)
+            if (mltoken_level == 0)
             {
-                tokenizer.emplace(new MLCommentToken(mltoken));
+                int start_pos = num_chars - yyleng;
+                mltoken = MLCommentToken("", yylineno, start_pos, start_pos - 1);
+                BEGIN(mlcomment);
             }
-            BEGIN(INITIAL);
+            mltoken += yytext;
+            mltoken_level++;
         }
 
-<mlcomment>{ML_NOT_ENDL}*{ENDL}|")"+ {
-                mltoken += yytext;
+<mlcomment>"("/[^"*"] { mltoken += yytext; }
+<mlcomment>({ML_NOT_ENDL}*|"(")"*"+")" {
+            mltoken += yytext;
+            mltoken_level--;
+            if (mltoken_level == 0)
+            {
+                if (!filter_comments)
+                {
+                    tokenizer.emplace(new MLCommentToken(mltoken));
+                }
+                BEGIN(INITIAL);
+            }
+        }
+
+<mlcomment>{ML_NOT_ENDL}*({ENDL}|(")"*)) {
+            mltoken += yytext;
         }
 
 
-{RATIONAL}  print_token("Num", yytext, false);
+{RATIONAL}  print_token("Num", yytext);
 
 {KEYWORDS}/[^[:alpha:]]  {
     char *s = strdup(yytext); 
     s[0] = (char)toupper(s[0]);
-    print_token(s, "", false, "KW_");
+    print_token(s, "", "KW_");
     free(s);
     }
 
-{BOOLEAN}/[^[:alpha:]]              print_token("Bool", yytext, false);
+{BOOLEAN}/[^[:alpha:]]              print_token("Bool", yytext);
 
-{IDENT}                             print_token("Ident", yytext, true);
+{IDENT}                             print_token("Ident", yytext);
 
-{SPECIALS}                          print_token("Op", yytext, false);
+{SPECIALS}                          print_token("Op", yytext);
 
 {SPLIT}                             print_token(split_names[yytext]);
 
 <INITIAL>{SPACE}                    update_num_chars();
 <INITIAL>.                          BEGIN(unknown); yyless(0);
 
-<unknown>{NOT_SPLIT}+               print_token("Unknown", yytext, true); BEGIN(INITIAL);
+<unknown>{NOT_SPLIT}+               print_token("Unknown", yytext); BEGIN(INITIAL);
 
 %%
 int main(int argc, char **argv)

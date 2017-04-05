@@ -1,1 +1,1 @@
-LParent(0, 0, 0); Op(Mult, 0, 3, 3); RParent(0, 4, 4); Ident("before", 2, 0, 5); Ident("after", 2, 8, 12); Ident("before", 3, 0, 5); Ident("after", 5, 1, 5); 
+LParent(0, 0, 0); Ident("before", 2, 0, 5); Ident("after", 2, 8, 12); Ident("before", 3, 0, 5); Ident("after", 5, 1, 5); 
