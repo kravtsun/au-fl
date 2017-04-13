@@ -1,0 +1,32 @@
+digraph "parser"
+{                                                              
+  node [fontname = courier, shape = box, colorscheme = paired6]
+  edge [fontname = courier]                                    
+ 13 [label="seq" ]
+ 13 -> 2
+ 2 [label="readexpr" ]
+ 2 -> 1
+ 1 [label="read\nline:  0\nbegin: 0\nend:   3" ]
+ 2 -> 0
+ 0 [label="@x\nline:  0\nbegin: 6\nend:   6" ]
+ 13 -> 12
+ 12 [label="if-then-else" ]
+ 12 -> 7
+ 7 [label="EQ" ]
+ 7 -> 5
+ 5 [label="PLUS" ]
+ 5 -> 3
+ 3 [label="@y\nline:  0\nbegin: 15\nend:   15" ]
+ 5 -> 4
+ 4 [label="1.000000\nline:  0\nbegin: 19\nend:   19" ]
+ 7 -> 6
+ 6 [label="@x\nline:  0\nbegin: 24\nend:   24" ]
+ 12 -> 10
+ 10 [label="writeexpr" ]
+ 10 -> 9
+ 9 [label="write\nline:  0\nbegin: 32\nend:   36" ]
+ 10 -> 8
+ 8 [label="@y\nline:  0\nbegin: 39\nend:   39" ]
+ 12 -> 11
+ 11 [label="skip\nline:  0\nbegin: 47\nend:   50" ]
+}

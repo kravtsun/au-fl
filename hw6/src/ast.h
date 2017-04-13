@@ -5,7 +5,8 @@
 namespace ast {
     template<typename T>
     void LOG(const T&x) {
-        std::cerr << x << std::endl;
+        (void)x;
+//        std::cerr << x << std::endl;
     }
 
     typedef struct YYLTYPE

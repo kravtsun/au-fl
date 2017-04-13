@@ -1,0 +1,10 @@
+digraph "parser"
+{                                                              
+  node [fontname = courier, shape = box, colorscheme = paired6]
+  edge [fontname = courier]                                    
+ 2 [label="writeexpr" ]
+ 2 -> 1
+ 1 [label="write\nline:  0\nbegin: 0\nend:   4" ]
+ 2 -> 0
+ 0 [label="1.000000\nline:  0\nbegin: 6\nend:   6" ]
+}

@@ -1,0 +1,6 @@
+digraph "parser"
+{                                                              
+  node [fontname = courier, shape = box, colorscheme = paired6]
+  edge [fontname = courier]                                    
+ 0 [label="skip\nline:  0\nbegin: 0\nend:   3" ]
+}

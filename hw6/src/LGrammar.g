@@ -48,8 +48,8 @@ main: multistmt { $$ = $1; main_node = $$; }
 
 expr
 : IDENT { $$ = new LeafNode(ident_prefix + $1, @1); }
-| NUM   { $$ = new LeafNode(std::to_string($1), @1); }
 | LPARENT expr RPARENT { $$ = $2; }
+| NUM   { $$ = new LeafNode(std::to_string($1), @1); }
 | FALSE { $$ = new LeafNode("false", @1); }
 | TRUE  { $$ = new LeafNode("true", @1); }
 | expr PLUS    expr { $$ = new Node($1, $3, "PLUS"); }
@@ -89,10 +89,7 @@ stmt
     $$ = new Node(ident_node, $3, "assign"); }
 | writeexpr { $$ = $1; }
 | readexpr  { $$ = $1; }
-| WHILE expr DO expr { std::ostringstream os;
-                       os << "while (" << $2 << ")(" << $4;
-                       LOG(os.str());
-                       $$ = new Node($2, $4, "while"); }
+| WHILE LPARENT expr RPARENT DO ifstmt { $$ = new Node($3, $6, "while-do"); }
 | IF LPARENT expr RPARENT THEN ifstmt ELSE ifstmt { $$ = new TripleNode($3, $6, $8, "if-then-else"); } 
 ;
 

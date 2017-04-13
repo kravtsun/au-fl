@@ -192,7 +192,9 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
 
 {RATIONAL}  { print_token("Num", yylloc, yytext); yylval.dval = atof(yytext); return NUM; }
 
-{KEYWORDS}/[^[:alpha:]]  { print_token(std::string("KW_") + yytext, yylloc, yytext); yylval.str = strdup(yytext); return keyword_tokens.at(yytext); }
+{KEYWORDS}/[^[:alpha:]]  { print_token(std::string("KW_") + yytext, yylloc, yytext);
+                           yylval.str = strdup(yytext);
+                           return keyword_tokens.at(yytext); }
 
 {BOOLEAN}/[^[:alpha:]] { print_token("Bool", yylloc, yytext); yylval.bval = strcmp(yytext, "true") == 0? true : false; return bool_tokens.at(yytext); }
 
@@ -200,7 +202,10 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
 
 {SPECIALS}     { print_token("Op", yylloc, yytext); yylval.op = yytext[0]; return operator_tokens.at(yytext); }
 
-{SPLIT}        { print_token("SPLIT", yylloc, yytext); return split_tokens.at(yytext); }
+{SPLIT}        {
+    print_token("SPLIT", yylloc, yytext);
+    return split_tokens.at(yytext);
+    }
 
 <INITIAL>{SPACE}  { }
 <INITIAL>.        { BEGIN(unknown); yyless(0); }
