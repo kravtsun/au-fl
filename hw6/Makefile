@@ -32,12 +32,15 @@ $(BISON_OUT): $(BISON_IN)
 
 clean: 
 	mkdir -p $(OUTPUT_DIR)
+	rm -f test/*.L.dot
 	rm -f $(OUTPUT_DIR)/*{.out,.dot,.output,.png} $(LEX_OUT) $(BISON_OUT)
 
 
 test: $(EXEC)
 	for f in test/*.L; do \
-		./$(EXEC) "$$f" && diff "$$f".dot "$${f%.L}.dot" >/dev/null; \
+		rm -f "$$f".dot; \
+		./$(EXEC) "$$f";\
+		diff "$$f".dot "$${f%.L}.dot" >/dev/null; \
 		if [ $$? -ne 0 ]; then \
 			>&2 echo test "$$f" failed!; \
 		fi;\

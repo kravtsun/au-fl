@@ -1,5 +1,6 @@
 %locations
-//%verbose
+%define parse.error verbose
+%define parse.lac full
 
 %code requires {
     extern int yylex();

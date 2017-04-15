@@ -263,7 +263,8 @@ int main(int argc, char **argv)
 }
 
 void yyerror(const char *s) {
-    std::cout << "Parser error: " << s << std::endl;
+    std::cout << "[ERROR] " << s << std::endl;
+    std::cout << "[ERROR] at position " << update_num_chars() - 1 << std::endl;
     exit(-1);
 }
 
