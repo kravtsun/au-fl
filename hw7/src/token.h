@@ -83,8 +83,15 @@ struct Alternative : public std::vector<std::shared_ptr<Token>> {
     }
 
     friend std::ostream &operator<<(std::ostream &os, const Alternative &rhs) {
-        auto f = [&os](std::shared_ptr<Token> ptr) { os << *ptr << " " ALTERNATIVE_SEPARATOR " "; };
-        std::for_each(rhs.cbegin(), rhs.cend(), f);
+        auto f = [&os](std::shared_ptr<Token> ptr) { os << *ptr; };
+        for (auto it = rhs.cbegin(); it != rhs.cend(); it++) {
+            f(*it);
+            if ((it + 1) != rhs.cend()) {
+                os << " ";
+//                os << " " ALTERNATIVE_SEPARATOR " ";
+            }
+        }
+//        std::for_each(rhs.cbegin(), rhs.cend(), f);
         return os;
     }
 };
