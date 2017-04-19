@@ -18,30 +18,31 @@ struct Token {
         : s_(s)
     {}
 
-    bool operator==(const Token &rhs) const {
-        return s_ == rhs.s_;
-    }
-
     static bool isEpsilon(const std::string &s);
 
     static bool isTerminal(const std::string &s);
 
     static Token *factory(const std::string &s);
 
+    const std::string &str() const {
+        return s_;
+    }
+
     virtual std::string type() const {
         return "Token";
     }
 
-//    friend std::ostream &operator<<(std::ostream &os, const Token &token) {
-//        if (auto ptr = dynamic_cast<Epsilon *>(&token)) {
-//            os << token.type();
-//        }
-//        else {
-//            os << token.type() << "(" << token.s_ << ")";
-//        }
-//        return os;
-//    }
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
+
+    friend bool operator ==(const Token &lhs, const Token &rhs) {
+        return lhs.str() == rhs.str();
+    }
+
+    friend bool operator !=(const Token &lhs, const Token &rhs) {
+        return !(lhs == rhs);
+    }
+
+protected:
     std::string s_;
 };
 
@@ -97,14 +98,18 @@ struct Alternative : public std::vector<std::shared_ptr<Token>> {
 };
 
 struct Rule {
+    using alternatives_type = std::vector<Alternative>;
+
     Rule(const Rule &rhs) = default;
+
     Rule()
         : Rule(empty)
     {}
 
-    Rule(const NonTerminal &left, const std::vector<Alternative> &alternatives)
+    template<typename Alternatives>
+    Rule(const NonTerminal &left, Alternatives &&alternatives)
         : left_(left)
-        , alternatives_(alternatives)
+        , alternatives_(std::forward<Alternatives>(alternatives))
     {}
 
     bool operator==(const Rule &rhs) const {
@@ -119,11 +124,11 @@ struct Rule {
         return *this != empty;
     }
 
-    NonTerminal left() const {
+    const NonTerminal &left() const {
         return left_;
     }
 
-    auto alternatives() const {
+    const alternatives_type &alternatives() const {
         return alternatives_;
     }
 
@@ -131,7 +136,7 @@ struct Rule {
 
 private:
     NonTerminal left_;
-    std::vector<Alternative> alternatives_;
+    alternatives_type alternatives_;
 };
 
 #endif // TOKEN_H

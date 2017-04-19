@@ -1,6 +1,6 @@
 #include "token.h"
 
-Rule Rule::empty = {{""}, {}};
+Rule Rule::empty = Rule(NonTerminal{""}, Rule::alternatives_type({}));
 
 bool Token::isEpsilon(const std::string &s) {
     return s == EPSILON;

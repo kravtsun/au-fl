@@ -1,4 +1,5 @@
 #include <iostream>
+#include <list>
 #include <algorithm>
 #include "token.h"
 #include "grammar_parser.h"
@@ -26,6 +27,32 @@ void print_rules(std::vector<Rule> &rules) {
     }
 }
 
+
+Rule merge_rules(const Rule &lhs, const Rule &rhs) {
+    assert(lhs.left() == rhs.left());
+    Rule::alternatives_type all_alternatives;
+    std::merge(all(lhs.alternatives()), all(rhs.alternatives()), std::back_inserter(all_alternatives));
+    return Rule(lhs.left(), all_alternatives);
+}
+
+void merge_rules(std::vector<Rule> &rules) {
+    std::sort(all(rules), [](const Rule &lhs, const Rule &rhs) -> bool { return lhs.left().str() < rhs.left().str(); });
+    std::list<Rule> lrules(all(rules));
+
+    for (auto it = lrules.begin(); it != lrules.end(); it++) {
+        auto next = it;
+        next++;
+        while (next != lrules.end()) {
+            if (next->left() != it->left()) break;
+            *it = merge_rules(*it, *next);
+            lrules.erase(next);
+            next = it;
+            next++;
+        }
+    }
+    rules.assign(all(lrules));
+}
+
 int main(int argc, char **argv)
 {
     (void)argc;
@@ -41,6 +68,10 @@ int main(int argc, char **argv)
     while (r = gp.parse_rule()) {
         rules.push_back(r);
     }
+
+    merge_rules(rules);
+
+    print_rules(rules);
 
     return 0;
 }
