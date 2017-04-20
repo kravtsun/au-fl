@@ -1,6 +1,7 @@
 #ifndef RULES_H
 #define RULES_H
 
+#include <list>
 #include "token.h"
 
 using Alternative = std::vector<TokenType>;
@@ -8,34 +9,6 @@ using Alternative = std::vector<TokenType>;
 std::istream &operator>>(std::istream &is, Alternative &rhs);
 
 std::ostream &operator<<(std::ostream &os, const Alternative &rhs);
-
-//struct Alternative {
-//    using vector = std::vector<TokenType>;
-//    template<typename ...Args>
-//    Alternative(Args &&...args): vector(args...) {}
-
-//    friend std::istream &operator>>(std::istream &is, Alternative &rhs) {
-//        rhs.clear();
-//        std::string token_str;
-//        while (static_cast<bool>(is >> token_str) && token_str != ALTERNATIVE_SEPARATOR) {
-//            rhs.emplace_back(TokenFactory::factory(token_str));
-//        }
-//        return is;
-//    }
-
-//    friend std::ostream &operator<<(std::ostream &os, const Alternative &rhs) {
-//        auto f = [&os](const TokenType &ptr) { os << *ptr; };
-//        for (auto it = rhs.cbegin(); it != rhs.cend(); it++) {
-//            f(*it);
-//            if ((it + 1) != rhs.cend()) {
-//                os << " ";
-////                os << " " ALTERNATIVE_SEPARATOR " ";
-//            }
-//        }
-////        std::for_each(rhs.cbegin(), rhs.cend(), f);
-//        return os;
-//    }
-//};
 
 struct Rule {
 //    using alternatives_type = std::vector<Alternative>;
@@ -79,19 +52,16 @@ struct Rule {
         return alternative_;
     }
 
-//    const alternatives_type &alternatives() const {
-//        return alternatives_;
-//    }
-
-//    alternatives_type &alternatives() {
-//        return alternatives_;
-//    }
+    bool isEpsilonRule() const {
+        return std::all_of(all(alternative_), [](const TokenType &t) -> bool { return t->isEpsilon(); });
+    }
 
 private:
     TokenType left_;
     Alternative alternative_;
 };
 
+// should be with eraseable by iterators elements.
 using Rules = std::vector<Rule>;
 
 #endif // RULES_H

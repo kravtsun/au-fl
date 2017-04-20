@@ -12,6 +12,10 @@ struct GrammarConverter
 
     bool isNormal();
 
+    const Rules &rules() const {
+        return rules_;
+    }
+
 private:
     std::string start_name_;
     Rules rules_;
@@ -58,6 +62,10 @@ private:
     } namer_;
 
     void add_start();
+
+    void remove_long_productions();
+
+    void remove_null_productions();
 };
 
 #endif // GRAMMARCONVERTER_H
