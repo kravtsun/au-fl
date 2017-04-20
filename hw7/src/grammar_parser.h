@@ -6,16 +6,16 @@
 #include <iterator>
 #include <cassert>
 
-#include "token.h"
+#include "rules.h"
 
 class GrammarParser
 {
 public:
     GrammarParser(std::istream &is);
 
-    bool operator()();
+    operator bool() const;
 
-    Rule parse_rule();
+    Rules parse_line();
 
     std::istream &is_;
 };

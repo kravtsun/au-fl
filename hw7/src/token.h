@@ -4,25 +4,43 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <algorithm>
 #include <memory>
 #include <cassert>
 
+#define forn(i, n) for (int i = 0; i < (int)(n); ++i)
+#define all(x) (x).begin(), (x).end()
+
 #define ALTERNATIVE_SEPARATOR "|"
 #define EPSILON "eps"
 
-struct Token {
-    Token() = default;
+/** friend class TokenFactory.
+ *
+ */
 
-    Token(const std::string s)
-        : s_(s)
-    {}
+struct TokenFactory;
+
+struct Token {
+//    Token() = default;
+    Token(const Token &rhs) = delete;
 
     static bool isEpsilon(const std::string &s);
+    bool isEpsilon() const {
+        return isEpsilon(s_);
+    }
 
     static bool isTerminal(const std::string &s);
+    bool isTerminal() const {
+        return isTerminal(s_);
+    }
 
-    static Token *factory(const std::string &s);
+    static bool isNonTerminal(const std::string &s) {
+        return !isEpsilon(s) && !isTerminal(s);
+    }
+    bool isNonTerminal() const {
+        return isNonTerminal(s_);
+    }
 
     const std::string &str() const {
         return s_;
@@ -42,23 +60,31 @@ struct Token {
         return !(lhs == rhs);
     }
 
+    friend bool operator <(const Token &lhs, const Token &rhs) {
+        return lhs.str() < rhs.str();
+    }
+
 protected:
     std::string s_;
+
+    Token(const std::string s) : s_(s) {}
+
+    friend class TokenFactory;
 };
 
-struct Terminal : public Token {
-    Terminal(const std::string &s) : Token(s) {}
+using TokenType = std::shared_ptr<Token>;
 
+struct Terminal : public Token {
     std::string type() const override {
         return "Terminal";
     }
+
+protected:
+    Terminal(const std::string &s) : Token(s) {}
+    friend class TokenFactory;
 };
 
 struct NonTerminal : public Token {
-    NonTerminal() = default;
-
-    NonTerminal(const std::string &s) : Token(s) {}
-
     std::string type() const override {
         return "Nonterminal";
     }
@@ -66,78 +92,23 @@ struct NonTerminal : public Token {
     friend std::istream& operator>>(std::istream &is, NonTerminal &rhs) {
         return is >> rhs.s_;
     }
+
+protected:
+    NonTerminal(const std::string &s) : Token(s) {}
+    friend class TokenFactory;
 };
 
 struct Epsilon : public Token {
-    Epsilon() :
-        Token(EPSILON)
-    {}
+    Epsilon() : Token(EPSILON) {}
 };
 
-struct Alternative : public std::vector<std::shared_ptr<Token>> {
-    friend std::istream &operator>>(std::istream &is, Alternative &rhs) {
-        std::string token_str;
-        while (static_cast<bool>(is >> token_str) && token_str != ALTERNATIVE_SEPARATOR) {
-            rhs.emplace_back(Token::factory(token_str));
-        }
-        return is;
-    }
-
-    friend std::ostream &operator<<(std::ostream &os, const Alternative &rhs) {
-        auto f = [&os](std::shared_ptr<Token> ptr) { os << *ptr; };
-        for (auto it = rhs.cbegin(); it != rhs.cend(); it++) {
-            f(*it);
-            if ((it + 1) != rhs.cend()) {
-                os << " ";
-//                os << " " ALTERNATIVE_SEPARATOR " ";
-            }
-        }
-//        std::for_each(rhs.cbegin(), rhs.cend(), f);
-        return os;
-    }
-};
-
-struct Rule {
-    using alternatives_type = std::vector<Alternative>;
-
-    Rule(const Rule &rhs) = default;
-
-    Rule()
-        : Rule(empty)
-    {}
-
-    template<typename Alternatives>
-    Rule(const NonTerminal &left, Alternatives &&alternatives)
-        : left_(left)
-        , alternatives_(std::forward<Alternatives>(alternatives))
-    {}
-
-    bool operator==(const Rule &rhs) const {
-        return left_ == rhs.left_ && alternatives_ == rhs.alternatives_;
-    }
-
-    bool operator!=(const Rule &rhs) const {
-        return !(*this == rhs);
-    }
-
-    operator bool() const {
-        return *this != empty;
-    }
-
-    const NonTerminal &left() const {
-        return left_;
-    }
-
-    const alternatives_type &alternatives() const {
-        return alternatives_;
-    }
-
-    static Rule empty;
-
+struct TokenFactory {
+    static TokenType factory(const std::string &);
 private:
-    NonTerminal left_;
-    alternatives_type alternatives_;
+    static std::unordered_map<std::string, TokenType> map_;
+    // TODO: deal with cases when nonterminals' names start or end with '
 };
+
 
 #endif // TOKEN_H
 

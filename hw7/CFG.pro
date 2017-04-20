@@ -6,11 +6,16 @@ CONFIG -= qt
 SOURCES += \
     src/grammar_parser.cpp \
     src/token.cpp \
-    src/main.cpp
+    src/main.cpp \
+    src/grammar_converter.cpp \
+    src/rules.cpp
 
 HEADERS += \
     src/grammar_parser.h \
-    src/token.h
+    src/token.h \
+    src/grammar_converter.h \
+    src/grammar.h \
+    src/rules.h
 
 INCLUDEPATH += src/
 

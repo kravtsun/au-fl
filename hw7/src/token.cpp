@@ -1,7 +1,5 @@
 #include "token.h"
 
-Rule Rule::empty = Rule(NonTerminal{""}, Rule::alternatives_type({}));
-
 bool Token::isEpsilon(const std::string &s) {
     return s == EPSILON;
 }
@@ -12,16 +10,34 @@ bool Token::isTerminal(const std::string &s) {
     return res;
 }
 
-Token *Token::factory(const std::string &s) {
-    if (isEpsilon(s)) {
-        return new Epsilon();
+std::unordered_map<std::string, TokenType> TokenFactory::map_;
+
+TokenType TokenFactory::factory(const std::string &s) {
+    if (s.empty()) {
+        return nullptr;
     }
-    else if (isTerminal(s)) {
-        return new Terminal(s);
+
+    auto it = map_.find(s);
+    if (it != map_.end()) {
+        return it->second;
+    }
+
+    Token *res = nullptr;
+    if (Token::isEpsilon(s)) {
+        res = new Epsilon();
+    }
+    else if (Token::isTerminal(s)) {
+        res = new Terminal(s);
     }
     else {
-        return new NonTerminal(s);
+        assert(Token::isNonTerminal(s));
+        res = new NonTerminal(s);
     }
+
+    auto shptr = static_cast<TokenType>(res);
+    map_[s] = shptr;
+
+    return shptr;
 }
 
 std::ostream &operator<<(std::ostream &os, const Token &token) {

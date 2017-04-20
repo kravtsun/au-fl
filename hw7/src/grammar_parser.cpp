@@ -1,22 +1,25 @@
 #include "grammar_parser.h"
+#include <iterator>
+#include <sstream>
 
 GrammarParser::GrammarParser(std::istream &is)
     : is_(is)
 {}
 
-bool GrammarParser::operator()() {
+GrammarParser::operator bool() const {
     return static_cast<bool>(is_);
 }
 
-Rule GrammarParser::parse_rule() {
+Rules GrammarParser::parse_line() {
     std::string line;
     std::getline(is_, line);
     if (line.empty()) {
         std::getline(is_, line);
     }
     if (line.empty() || !is_) {
-        return Rule::empty;
+        return {};
     }
+
     std::istringstream isline(line);
     std::string name;
     isline >> name;
@@ -24,7 +27,13 @@ Rule GrammarParser::parse_rule() {
     isline >> c;
     assert(c == '=');
 
-    std::vector<Alternative> alternatives;
-    std::copy(std::istream_iterator<Alternative>(isline), std::istream_iterator<Alternative>(), std::back_inserter(alternatives));
-    return Rule(name, alternatives);
+    Rules rules;
+    auto left = TokenFactory::factory(name);
+    assert(left && left->isNonTerminal());
+    do {
+        Alternative a;
+        isline >> a;
+        rules.emplace_back(left, a);
+    } while (isline);
+    return rules;
 }
