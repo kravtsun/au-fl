@@ -62,6 +62,6 @@ private:
 };
 
 // should be with eraseable by iterators elements.
-using Rules = std::vector<Rule>;
+using Rules = std::list<Rule>;
 
 #endif // RULES_H

@@ -6,6 +6,8 @@
 
 struct GrammarConverter
 {
+    using TokenTypeComp = TokenFactory::TokenTypeComp;
+    using TokenTypePairComp = TokenFactory::TokenTypePairComp;
     GrammarConverter(const std::string &start_name, const Rules &rules);
 
     void convertToChomsky();
@@ -26,7 +28,8 @@ private:
             , current_name_("A")
         {}
 
-        std::string next_name() {
+        std::string next_name(const std::string &base) {
+#if 0
             bool fl = false;
             for (auto it = current_name_.rbegin(); it != current_name_.rend(); it++) {
                 if (*it != 'Z') {
@@ -38,9 +41,19 @@ private:
                 current_name_.assign(current_name_.size() + 1, 'A');
             }
             if (names_.count(current_name_) == 0) {
+                names_.insert(current_name_);
                 return current_name_;
             }
-            return next_name();
+#else
+            for (int i = 1; ; ++i) {
+                std::string s = base + std::to_string(i);
+                if (names_.count(s) == 0) {
+                    names_.insert(s);
+                    return s;
+                }
+            }
+#endif
+            return next_name(base);
         }
 
     private:
@@ -68,6 +81,17 @@ private:
     void remove_long_productions();
 
     void remove_null_productions();
+
+    void remove_circuit_rules();
+
+    void remove_non_generating();
+
+    void after_party();
+
+    // TODO.
+//    void remove_duplicates();
+
+    void remove_terminal_only();
 };
 
 #endif // GRAMMARCONVERTER_H

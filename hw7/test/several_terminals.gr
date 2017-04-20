@@ -1,0 +1,5 @@
+S = 'a' S1
+X = 'a' Y | 'b' Y
+Y = 'a' Y | 'b' Y | 'c' 'c'
+S1 = X S2 | 'y' X| 'y'
+S2 = 'y' X | 'y'

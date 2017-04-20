@@ -15,7 +15,7 @@
 #define ALTERNATIVE_SEPARATOR "|"
 #define EPSILON "eps"
 
-/** friend class TokenFactory.
+/** friend TokenFactory.
  *
  */
 
@@ -53,17 +53,17 @@ struct Token {
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
 
-//    friend bool operator ==(const Token &lhs, const Token &rhs) {
-//        return lhs.str() == rhs.str();
-//    }
+    friend bool operator ==(const Token &lhs, const Token &rhs) {
+        return lhs.str() == rhs.str();
+    }
 
-//    friend bool operator !=(const Token &lhs, const Token &rhs) {
-//        return !(lhs == rhs);
-//    }
+    friend bool operator !=(const Token &lhs, const Token &rhs) {
+        return !(lhs == rhs);
+    }
 
-//    friend bool operator <(const Token &lhs, const Token &rhs) {
-//        return lhs.str() < rhs.str();
-//    }
+    friend bool operator <(const Token &lhs, const Token &rhs) {
+        return lhs.str() < rhs.str();
+    }
 
     operator bool() const {
         return !s_.empty();
@@ -74,7 +74,7 @@ protected:
 
     Token(const std::string s) : s_(s) {}
 
-    friend class TokenFactory;
+    friend TokenFactory;
 };
 
 using TokenType = std::shared_ptr<Token>;
@@ -86,7 +86,7 @@ struct Terminal : public Token {
 
 protected:
     Terminal(const std::string &s) : Token(s) {}
-    friend class TokenFactory;
+    friend TokenFactory;
 };
 
 struct NonTerminal : public Token {
@@ -100,17 +100,29 @@ struct NonTerminal : public Token {
 
 protected:
     NonTerminal(const std::string &s) : Token(s) {}
-    friend class TokenFactory;
+    friend TokenFactory;
 };
 
 struct Epsilon : public Token {
     Epsilon() : Token(EPSILON) {}
+    std::string type() const override {
+        return "eps";
+    }
 };
 
 struct TokenFactory {
     struct TokenTypeComp {
-        bool operator()(const TokenType &lhs, const TokenType &rhs) {
+        bool operator()(const TokenType &lhs, const TokenType &rhs) const {
             return lhs->str() < rhs->str();
+        }
+    };
+
+    struct TokenTypePairComp {
+        bool operator()(const std::pair<TokenType, TokenType> &lhs, const std::pair<TokenType, TokenType> &rhs) const {
+            if (lhs.first->str() != rhs.first->str()) {
+                return lhs.first->str() < rhs.first->str();
+            }
+            return lhs.second->str() < rhs.second->str();
         }
     };
 
