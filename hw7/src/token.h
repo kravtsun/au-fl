@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <memory>
+#include <set>
 #include <cassert>
 
 #define forn(i, n) for (int i = 0; i < (int)(n); ++i)
@@ -126,9 +127,21 @@ struct TokenFactory {
         }
     };
 
+    static const auto &all_non_terminals() {
+        return non_terminals;
+    }
+
+    static int non_terminal_index(const TokenType &t) {
+        assert(t->isNonTerminal());
+        auto comp = [&t](const TokenType &tt) -> bool { return tt->str() == t->str(); };
+        auto it = std::find_if(all(non_terminals), comp);
+        return (int)(std::distance(non_terminals.begin(), it));
+    }
+
     static TokenType factory(const std::string &);
 private:
     static std::unordered_map<std::string, TokenType> map_;
+    static std::set<TokenType, TokenTypeComp> non_terminals;
     // TODO: deal with cases when nonterminals' names start or end with '
 };
 

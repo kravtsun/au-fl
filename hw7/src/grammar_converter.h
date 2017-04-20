@@ -86,6 +86,8 @@ private:
 
     void remove_non_generating();
 
+    void remove_not_reachable();
+
     void after_party();
 
     // TODO.

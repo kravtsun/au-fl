@@ -11,6 +11,7 @@ bool Token::isTerminal(const std::string &s) {
 }
 
 std::unordered_map<std::string, TokenType> TokenFactory::map_;
+std::set<TokenType, TokenFactory::TokenTypeComp> TokenFactory::non_terminals;
 
 TokenType TokenFactory::factory(const std::string &s) {
     if (s.empty()) {
@@ -32,6 +33,7 @@ TokenType TokenFactory::factory(const std::string &s) {
     else {
         assert(Token::isNonTerminal(s));
         res = new NonTerminal(s);
+        non_terminals.insert(static_cast<TokenType>(res));
     }
 
     auto shptr = static_cast<TokenType>(res);

@@ -282,6 +282,44 @@ void GrammarConverter::remove_non_generating()
     after_party();
 }
 
+void GrammarConverter::remove_not_reachable()
+{
+    std::queue<TokenType> q;
+    auto start_token = TokenFactory::factory(start_name_);
+    std::set<std::string> used;
+//    std::set<TokenType, TokenFactory::TokenTypeComp> used;
+
+    q.push(start_token);
+    used.insert(start_name_);
+
+    while (!q.empty()) {
+        auto v = q.front();
+        q.pop();
+        for (auto const &r : rules_) {
+            if (r.left()->str() == v->str()) {
+                const auto &v = r.right();
+                for (auto const &to : v) {
+                    if (used.count(to->str()) == 0) {
+                        used.insert(to->str());
+                        q.push(to);
+                    }
+                }
+            }
+        }
+    }
+
+    for (auto it = rules_.begin(); it != rules_.end(); ) {
+        if (used.count(it->left()->str()) == 0) {
+            it = rules_.erase(it);
+        }
+        else {
+            it++;
+        }
+    }
+
+    after_party();
+}
+
 
 
 void GrammarConverter::remove_terminal_only()
@@ -323,5 +361,6 @@ void GrammarConverter::convertToChomsky()
     remove_null_productions();
     remove_circuit_rules();
     remove_non_generating();
+    remove_not_reachable();
     remove_terminal_only();
 }
