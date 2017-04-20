@@ -35,5 +35,6 @@ Rules GrammarParser::parse_line() {
         isline >> a;
         rules.emplace_back(left, a);
     } while (isline);
+    assert(std::all_of(all(rules), [](const Rule &r) -> bool { return r.left() && static_cast<bool>(*r.left()); }));
     return rules;
 }

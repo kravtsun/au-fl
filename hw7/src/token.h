@@ -22,6 +22,7 @@
 struct TokenFactory;
 
 struct Token {
+
 //    Token() = default;
     Token(const Token &rhs) = delete;
 
@@ -52,16 +53,20 @@ struct Token {
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
 
-    friend bool operator ==(const Token &lhs, const Token &rhs) {
-        return lhs.str() == rhs.str();
-    }
+//    friend bool operator ==(const Token &lhs, const Token &rhs) {
+//        return lhs.str() == rhs.str();
+//    }
 
-    friend bool operator !=(const Token &lhs, const Token &rhs) {
-        return !(lhs == rhs);
-    }
+//    friend bool operator !=(const Token &lhs, const Token &rhs) {
+//        return !(lhs == rhs);
+//    }
 
-    friend bool operator <(const Token &lhs, const Token &rhs) {
-        return lhs.str() < rhs.str();
+//    friend bool operator <(const Token &lhs, const Token &rhs) {
+//        return lhs.str() < rhs.str();
+//    }
+
+    operator bool() const {
+        return !s_.empty();
     }
 
 protected:
@@ -103,6 +108,12 @@ struct Epsilon : public Token {
 };
 
 struct TokenFactory {
+    struct TokenTypeComp {
+        bool operator()(const TokenType &lhs, const TokenType &rhs) {
+            return lhs->str() < rhs->str();
+        }
+    };
+
     static TokenType factory(const std::string &);
 private:
     static std::unordered_map<std::string, TokenType> map_;

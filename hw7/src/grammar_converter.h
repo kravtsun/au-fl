@@ -50,7 +50,9 @@ private:
         static std::set<std::string> all_non_terminals_names(const Rules &rules) {
             std::set<std::string> res;
             for (auto const &r : rules) {
-                res.insert(r.left().str());
+                TokenType t = r.left();
+                assert(t && (bool)(*t));
+                res.insert(t->str());
                 for (auto const & t : r.right()) {
                     if (t->isNonTerminal()) {
                         res.insert(t->str());

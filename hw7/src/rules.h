@@ -44,17 +44,17 @@ struct Rule {
         return left_ != nullptr && !alternative_.empty();
     }
 
-    const Token &left() const {
-        return *left_;
+    TokenType left() const {
+        return left_;
     }
 
     const Alternative &right() const {
         return alternative_;
     }
 
-    bool isEpsilonRule() const {
-        return std::all_of(all(alternative_), [](const TokenType &t) -> bool { return t->isEpsilon(); });
-    }
+//    bool isEpsilonRule() const {
+//        return std::all_of(all(alternative_), [](const TokenType &t) -> bool { return t->isEpsilon(); });
+//    }
 
 private:
     TokenType left_;

@@ -1,6 +1,10 @@
 #include <set>
 #include <list>
+#include <iterator>
+#include <iostream>
 #include "grammar_converter.h"
+#include <queue>
+#include <map>
 
 GrammarConverter::GrammarConverter(const std::string &start_name, const Rules &rules)
     : start_name_(start_name)
@@ -11,7 +15,7 @@ GrammarConverter::GrammarConverter(const std::string &start_name, const Rules &r
 bool GrammarConverter::isNormal() {
     int eps_cnt = 0;
     for (auto const &r : rules_) {
-        assert(r.left().isNonTerminal());
+        assert(r.left()->isNonTerminal());
         assert(!r.right().empty());
 
         if (r.right().size() > 2) return false;
@@ -37,7 +41,7 @@ bool GrammarConverter::isNormal() {
 void GrammarConverter::add_start() {
     bool has_start_in_right = false;
     for (auto const &r : rules_) {
-        auto it = std::find_if(all(r.right()), [this](TokenType t) -> bool { return t->isNonTerminal() && t->str() == start_name_; });
+        auto it =   std::find_if(all(r.right()), [this](TokenType t) -> bool { return t->isNonTerminal() && t->str() == start_name_; });
         has_start_in_right = has_start_in_right || it == r.right().end();
     }
     if (!has_start_in_right) return;
@@ -58,10 +62,7 @@ void GrammarConverter::remove_long_productions()
     for (auto it = rules_.begin(); it != rules_.end(); ++it) {
         if (it->right().size() > 2) {
             auto &a = it->right();
-            const std::string cur_name = it->left().str();
-//             TODO: replace with it->left() // (need to change Rule's interface to deal with left as TokenType).
-            auto cur_non_terminal = TokenFactory::factory(cur_name);
-//            auto cur_non_terminal = it->left();
+            auto cur_non_terminal = it->left();
             for (size_t i = 0; i+2 < a.size(); ++i) {
                 const std::string new_name = namer_.next_name();
                 auto new_non_terminal = TokenFactory::factory(new_name);
@@ -80,7 +81,28 @@ void GrammarConverter::remove_long_productions()
 
 void GrammarConverter::remove_null_productions()
 {
+    std::map<TokenType, bool, TokenFactory::TokenTypeComp> iseps;
+    auto isEpsilonToken = [&iseps](TokenType t) -> bool { return t->isEpsilon() || (t->isTerminal() && iseps[t]); };
+    std::queue<TokenType> q;
+    do {
+        if (!q.empty()) {
+            q.pop();
+        }
+        for (auto const &r : rules_) {
+            if (!iseps[r.left()] && (r.left()->isEpsilon() || std::all_of(all(r.right()), isEpsilonToken))) {
+                iseps[r.left()] = true;
+                q.push(r.left());
+            }
+        }
+    } while (!q.empty());
 
+    std::vector<std::string> v;
+    for (auto const &p : iseps) {
+        if (p.second) {
+            v.push_back(p.first->str());
+        }
+    }
+    std::copy(all(v), std::ostream_iterator<std::string>(std::cout, ", "));
 }
 
 

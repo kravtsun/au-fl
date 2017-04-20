@@ -8,7 +8,7 @@ using namespace std;
 
 void print_rules(const Rules &rules) {
     for (auto const &r : rules) {
-        cout << r.left() << " = " << r.right() << endl;
+        cout << *r.left() << " = " << r.right() << endl;
     }
 }
 
