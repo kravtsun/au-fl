@@ -23,6 +23,7 @@ $(BINDIR):
 
 clean:
 	rm -rf $(BINDIR) $(EXEC)
+	find . -name \*.output -or -name \*.dot -delete
 
 GRAMMAR_EXT=".gr"
 define test_grammar = 

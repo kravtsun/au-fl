@@ -2,23 +2,38 @@
 #define GRAMMAR_H
 
 #include <string>
-#include <memory>
+
+#define PRINT_CSV 1
 #include "token.h"
-
-struct ParseTree {
-    struct Node {
-        TokenType token;
-        Node *left_ = nullptr, *right_ = nullptr;
-    };
-
-    Node *root;
-};
+#include "grammar_parser.h"
+#include "parse_tree.h"
 
 struct Grammar {
-    ParseTree *solve(const std::string &word);
+    using vbool = std::vector<bool>;
+    using vvbool = std::vector<vbool>;
+    using vvvbool = std::vector<vvbool>;
+
+public:
+    Grammar(std::istream &is);
+
+    void print_rules();
+
+    void normalize();
+
+    bool check(const std::string &word);
+
+    void show_table();
+
+    const ParseTree &tree() {
+        return pt_;
+    }
+
 private:
-    Rules rules;
-    TokenType start;
+    std::string start_name_;
+    Rules rules_;
+    vvvbool dp_;
+    std::string word_;
+    ParseTree pt_;
 };
 
 #endif // GRAMMAR_H
