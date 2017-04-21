@@ -22,7 +22,7 @@ HEADERS += \
 
 INCLUDEPATH += src/
 
-QMAKE_CXXFLAGS += -Wall -Wconversion
+QMAKE_CXXFLAGS += -Wall -Wconversion -DPRINT_CSV=0
 
 DISTFILES += \
     test/example.gr

@@ -3,7 +3,6 @@
 
 #include <string>
 
-#define PRINT_CSV 1
 #include "token.h"
 #include "grammar_parser.h"
 #include "parse_tree.h"
