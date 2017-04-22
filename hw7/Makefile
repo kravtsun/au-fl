@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -O2 -Wall -std=c++14 -DPRINT_CSV=1
+CXXFLAGS = -O2 -Wall -std=c++14 -DPRINT_CSV=0
 LDFLAGS = 
 
 EXEC = a.out

@@ -23,8 +23,6 @@
 struct TokenFactory;
 
 struct Token {
-
-//    Token() = default;
     Token(const Token &rhs) = delete;
 
     static bool isEpsilon(const std::string &s);

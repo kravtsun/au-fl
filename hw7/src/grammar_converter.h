@@ -76,8 +76,6 @@ private:
         }
     } namer_;
 
-    void add_start();
-
     void remove_long_productions();
 
     void remove_null_productions();

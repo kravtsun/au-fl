@@ -5,12 +5,11 @@
 #include <queue>
 #include <map>
 #include <cassert>
+#include "grammar_converter.h"
 
 template<typename T> void debug(const T &x) {
     std::cout << "[DEBUG] " << x << std::endl;
 }
-
-#include "grammar_converter.h"
 
 GrammarConverter::GrammarConverter(const std::string &start_name, const Rules &rules)
     : start_name_(start_name)
@@ -41,27 +40,6 @@ bool GrammarConverter::isNormal() {
         }
     }
     return eps_cnt <= 1;
-}
-
-
-void GrammarConverter::add_start() {
-    bool has_start_in_right = false;
-    for (auto const &r : rules_) {
-        auto it =   std::find_if(all(r.right()), [this](TokenType t) -> bool { return t->isNonTerminal() && t->str() == start_name_; });
-        has_start_in_right = has_start_in_right || it == r.right().end();
-    }
-    if (!has_start_in_right) return;
-
-    std::string new_start_name = namer_.next_name(start_name_);
-    auto new_start = TokenFactory::factory(new_start_name);
-    assert(new_start);
-    auto old_start = TokenFactory::factory(start_name_);
-    assert(old_start->isNonTerminal());
-    Alternative new_alternative(1, old_start);
-    assert(new_start);
-    Rule new_rule(new_start, new_alternative);
-    rules_.emplace_back(new_rule);
-    start_name_ = new_start_name;
 }
 
 void GrammarConverter::after_party()
@@ -151,23 +129,10 @@ void GrammarConverter::remove_null_productions()
         else {
             it++;
         }
-//            it = rules_.erase(it);
-//        }
-//        else {
-//            it++;
-//        }
         assert(rules_.size() < 1000);
     }
 
     after_party();
-
-//    std::vector<std::string> v;
-//    for (auto const &p : iseps) {
-//        if (p.second) {
-//            v.push_back(p.first->str());
-//        }
-//    }
-    //    std::copy(all(v), std::ostream_iterator<std::string>(std::cout, ", "));
 }
 
 void GrammarConverter::remove_circuit_rules()
@@ -175,7 +140,6 @@ void GrammarConverter::remove_circuit_rules()
     auto isCurcuitRule = [](const Rule &r) -> bool { return r.right().size() == 1 && r.right()[0]->isNonTerminal(); };
 
     std::map<TokenType, std::vector<Alternative>, TokenTypeComp> token_alternatives;
-//    std::map<TokenType, std::vector<Rules::iterator>, TokenTypeComp> token_noncircuit;
     std::vector<Rules::iterator> circuit_rules;
     std::map<TokenType, std::set<TokenType, TokenTypeComp>, TokenTypeComp> circuit_pairs;
     std::queue<TokenType> q;
@@ -183,7 +147,6 @@ void GrammarConverter::remove_circuit_rules()
     for (auto it = rules_.begin(); it != rules_.end(); ++it) {
         auto t = it->left();
         if (isCurcuitRule(*it)) {
-//            circuit_pairs[t].insert(t);
             assert(it->right().size() == 1);
             circuit_pairs[t].insert(it->right().front());
             q.push(t);
@@ -192,19 +155,14 @@ void GrammarConverter::remove_circuit_rules()
         else {
             token_alternatives[t].push_back(it->right());
         }
-//        else {
-//            token_noncircuit[it->left()].push_back(it);
-//        }
     }
     std::set<std::pair<TokenType, TokenType>, TokenTypePairComp> worked_pairs;
 
     while (!q.empty()) {
         auto t = q.front();
         q.pop();
-//        debug("t = " + t->str());
         std::set<TokenType, TokenTypeComp> new_to;
         for (auto const &t2 : circuit_pairs[t]) {
-//            debug("t2 = " + t2->str());
             auto p = std::make_pair(t, t2);
             for (auto const &t3 : circuit_pairs[t2]) {
                 if (circuit_pairs.at(t).count(t3) == 0) {
@@ -287,7 +245,6 @@ void GrammarConverter::remove_not_reachable()
     std::queue<TokenType> q;
     auto start_token = TokenFactory::factory(start_name_);
     std::set<std::string> used;
-//    std::set<TokenType, TokenFactory::TokenTypeComp> used;
 
     q.push(start_token);
     used.insert(start_name_);
@@ -333,7 +290,6 @@ void GrammarConverter::remove_terminal_only()
                 auto new_non_terminal = TokenFactory::factory(namer_.next_name(it->left()->str()));
                 Alternative new_alternative = {t};
                 rules_.emplace_back(new_non_terminal, new_alternative);
-//                t = new_non_terminal;
                 forRemoval = true;
                 alternative.push_back(new_non_terminal);
             }
@@ -356,7 +312,6 @@ void GrammarConverter::remove_terminal_only()
 
 void GrammarConverter::convertToChomsky()
 {
-//    add_start();
     remove_long_productions();
     remove_null_productions();
     remove_circuit_rules();
