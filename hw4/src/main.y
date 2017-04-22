@@ -88,20 +88,24 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
         }
 
 
-<INITIAL,mlcomment>"(*" {
+<INITIAL,mlcomment>"(*"[^"*"(]* {
             const int num_chars = update_num_chars();
             if (mltoken_level == 0)
             {
                 int start_pos = num_chars - yyleng;
-                mltoken = MLCommentToken("", yylineno, start_pos, start_pos - 1);
+                mltoken = MLCommentToken("", yylineno - 1, start_pos, start_pos-1);
                 BEGIN(mlcomment);
             }
             mltoken += yytext;
             mltoken_level++;
         }
 
-<mlcomment>"("/[^"*"] { mltoken += yytext; }
-<mlcomment>({ML_NOT_ENDL}*|"(")"*"+")" {
+<mlcomment>"("[^"*"]* {
+            update_num_chars();
+            mltoken += yytext; }
+
+<mlcomment>{ML_NOT_ENDL}*"*"+")" {
+            update_num_chars();
             mltoken += yytext;
             mltoken_level--;
             if (mltoken_level == 0)
@@ -114,7 +118,8 @@ TOKEN_END   {SPLIT}|{SPACE}|{COMMENTS}
             }
         }
 
-<mlcomment>{ML_NOT_ENDL}*({ENDL}|(")"*)) {
+<mlcomment>{ML_NOT_ENDL}*({ENDL}|")") {
+            update_num_chars();
             mltoken += yytext;
         }
 

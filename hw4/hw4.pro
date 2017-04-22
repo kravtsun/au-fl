@@ -33,4 +33,6 @@ DISTFILES += \
     test/split.l \
     test/sum.l \
     test/unknown.l \
-    test/mlcomments.l
+    test/mlcomments.l \
+    test/greedy_star.l \
+    test/multiline.l
