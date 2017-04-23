@@ -42,7 +42,7 @@ struct Token
         return os.str();
     }
 
-private:
+protected:
     int line_, start_, end_;
 };
 

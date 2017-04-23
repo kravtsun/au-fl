@@ -1,0 +1,5 @@
+S
+S = A 'c'
+A = S D
+D = a D
+A = 'a'

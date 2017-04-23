@@ -1,0 +1,10 @@
+digraph "parser"
+{                                                              
+  node [fontname = courier, shape = box, colorscheme = paired6]
+  edge [fontname = courier]                                    
+ 2 [label="readexpr" ]
+ 2 -> 1
+ 1 [label="read\nline:  0\nbegin: 0\nend:   3" ]
+ 2 -> 0
+ 0 [label="@ident\nline:  0\nbegin: 5\nend:   9" ]
+}

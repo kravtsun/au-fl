@@ -1,0 +1,18 @@
+digraph "parser"
+{                                                              
+  node [fontname = courier, shape = box, colorscheme = paired6]
+  edge [fontname = courier]                                    
+ 6 [label="assign" ]
+ 6 -> 5
+ 5 [label="@x\nline:  0\nbegin: 0\nend:   0" ]
+ 6 -> 4
+ 4 [label="PLUS" ]
+ 4 -> 0
+ 0 [label="2.000000\nline:  0\nbegin: 5\nend:   5" ]
+ 4 -> 3
+ 3 [label="MULT" ]
+ 3 -> 1
+ 1 [label="3.000000\nline:  0\nbegin: 9\nend:   9" ]
+ 3 -> 2
+ 2 [label="4.000000\nline:  0\nbegin: 13\nend:   13" ]
+}

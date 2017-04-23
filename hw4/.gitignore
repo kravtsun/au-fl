@@ -1,4 +1,5 @@
 *.out
+*.outf
 lex.yy.c*
 llexer
 bin

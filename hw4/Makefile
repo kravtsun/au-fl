@@ -1,4 +1,4 @@
-FLEX=flex -l
+FLEX=flex -l #-d -s
 SRC_DIR=src
 TEST_DIR=test
 SPEC_FILE=$(SRC_DIR)/main.y
@@ -22,8 +22,14 @@ test: $(EXEC)
 		check="$$name".a;\
 		$(EXEC) < $${f} | diff - "$$check" > /dev/null || echo "TEST $$f failed!" && $(EXEC) < $${f} > $${name}.out;\
 	done;
+	for f in $(TEST_DIR)/*comments.l; do \
+		name="$${f%$(INPUT_EXT)}";\
+		check="$$name".af;\
+		$(EXEC) -filter < $${f} | diff - "$$check" > /dev/null || echo "TEST $$f failed!" && $(EXEC) -filter < $${f} > $${name}.outf;\
+	done;
+
 
 clean:
-	rm -f $(EXEC) $(LEXER_SRC) test/*.out
+	rm -f $(EXEC) $(LEXER_SRC) test/*.out test/*.outf
 
 .PHONY: test clean
