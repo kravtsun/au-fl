@@ -177,4 +177,12 @@ fabric.properties
 
 
 *.png
+*.out
+*.output
+build-*
+build
+*.pro.user
+*.tab.g
 
+*.o
+bin
