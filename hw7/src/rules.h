@@ -28,18 +28,6 @@ struct Rule {
         assert(left == nullptr || left->isNonTerminal());
     }
 
-    bool operator<(const Rule &rhs) const {
-        return *left_ < *rhs.left_;
-    }
-
-    bool operator==(const Rule &rhs) const {
-        return *left_ == *rhs.left_ && alternative_ == rhs.alternative_;
-    }
-
-    bool operator!=(const Rule &rhs) const {
-        return !(*this == rhs);
-    }
-
     operator bool() const {
         return left_ != nullptr && !alternative_.empty();
     }

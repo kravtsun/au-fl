@@ -12,7 +12,7 @@ struct GrammarConverter
 
     void convertToChomsky();
 
-    bool isNormal();
+    bool isNormal() const;
 
     const Rules &rules() const {
         return rules_;

@@ -17,7 +17,7 @@ GrammarConverter::GrammarConverter(const std::string &start_name, const Rules &r
     , namer_(rules)
 {}
 
-bool GrammarConverter::isNormal() {
+bool GrammarConverter::isNormal() const {
     int eps_cnt = 0;
     for (auto const &r : rules_) {
         assert(r.left()->isNonTerminal());

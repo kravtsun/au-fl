@@ -5,7 +5,9 @@
 
 int ParseTree::node_cnt_;
 
-Grammar::Grammar(std::istream &is) {
+Grammar::Grammar(std::istream &is)
+    : pt_()
+{
     std::getline(is, start_name_);
 
     GrammarParser gp(is);

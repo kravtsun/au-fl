@@ -52,18 +52,6 @@ struct Token {
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
 
-    friend bool operator ==(const Token &lhs, const Token &rhs) {
-        return lhs.str() == rhs.str();
-    }
-
-    friend bool operator !=(const Token &lhs, const Token &rhs) {
-        return !(lhs == rhs);
-    }
-
-    friend bool operator <(const Token &lhs, const Token &rhs) {
-        return lhs.str() < rhs.str();
-    }
-
     operator bool() const {
         return !s_.empty();
     }
