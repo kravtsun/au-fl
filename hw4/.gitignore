@@ -1,0 +1,5 @@
+*.out
+lex.yy.c*
+llexer
+bin
+*.pro.user

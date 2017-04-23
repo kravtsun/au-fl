@@ -1,0 +1,1 @@
+Ident("a", 0, 0, 0); Comment(" first comment", 0, 2, 17); Ident("b", 2, 0, 0); Comment(" second comment", 2, 1, 17); Comment(" comment with // \\//", 4, 0, 22); Comment("/ triple", 6, 0, 9); 

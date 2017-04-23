@@ -1,0 +1,12 @@
+# BUILD
+make
+src/lex.yy.cc
+%{CurrentProject:Path}
+
+# CLEAN
+make
+clean
+%{CurrentProject:Path}
+
+# EXECUTE
+< ../../test/unknown.l
