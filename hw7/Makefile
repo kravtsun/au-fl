@@ -1,29 +1,19 @@
 CXX = g++
-CXXFLAGS = -O2 -Wall -std=c++14 -DPRINT_CSV=0
+CXXFLAGS = -O2 -Wall -std=c++14
 LDFLAGS = 
 
-EXEC = a.out
-SRCDIR = src
-BINDIR = bin
+EXEC = cyk/cyk
 
-OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(BINDIR)/%.o,$(wildcard $(SRCDIR)/*.cpp))
+CYK_SOURCES = $(wildcard cyk/src/*)
+CFG_SOURCES = $(wildcard ../lib/cfg/src/*)
 
-all: $(EXEC)
+QMAKE_MAKEFILE = Makefile.hw7
 
-$(EXEC): $(BINDIR) $(OBJECTS)
-	$(CXX) $(OBJECTS) -o $(EXEC) $(LDFLAGS)
-	
-$(BINDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -c -MMD -o $@ $<
+EXEC: %(QMAKE_MAKEFILE) $(CYK_SOURCES) $(CFG_SOURCES)
+	qmake && make -j $$(nproc) -f $(QMAKE_MAKEFILE); \cd -
 
-include $(wildcard $(BINDIR)/*.d)
-
-$(BINDIR):
-	mkdir -p $(BINDIR)
-
-clean:
-	rm -rf $(BINDIR) $(EXEC)
-	find . -name \*.output -or -name \*.dot -delete
+%(QMAKE_MAKEFILE):
+	qmake
 
 GRAMMAR_EXT=".gr"
 define test_grammar = 
@@ -40,11 +30,14 @@ define test_grammar =
 endef
 
 test: $(EXEC)
-	for gr in test/*.gr; do \
+	for gr in cyk/test/*.gr; do \
 		grname="$${gr%$(GRAMMAR_EXT)}"; \
 		$(call test_grammar,"$$grname","wrong",0); \
 		$(call test_grammar,"$$grname","right",1); \
 	done;
+
+clean: 
+	qmake && make clean -f $(QMAKE_MAKEFILE) && rm -f $(QMAKE_MAKEFILE)
 
 .PHONY: clean all test
 

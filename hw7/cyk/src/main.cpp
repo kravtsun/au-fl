@@ -1,13 +1,18 @@
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 #include <cstring>
 
 #include "grammar.h"
+#include "grammar_checker.h"
 
 using namespace std;
 
-int main(int argc, char **argv)
-{
+bool has_argument(int argc, char **argv, const char *args) {
+    return std::any_of(argv, argv + argc, [args](const char *s) -> bool { return strcmp(s, args) == 0; });
+}
+
+int main(int argc, char **argv) {
     if (argc < 3) {
         std::cerr << "USAGE: " << argv[0] << " grammar_filepath input_sequence_filepath [--dot]" << std::endl;
         return 1;
@@ -17,9 +22,10 @@ int main(int argc, char **argv)
 
     Grammar gr(grammar_fin);
     gr.normalize();
-#if !PRINT_CSV
-    gr.print_rules();
-#endif
+    GrammarChecker gc(gr);
+    if (has_argument(argc, argv, "--verbose")) {
+        gr.print_rules();
+    }
 
     std::ifstream fin(argv[2]);
     if (!fin) {
@@ -29,19 +35,14 @@ int main(int argc, char **argv)
 
     std::string word;
     std::getline(fin, word);
-    bool result = gr.check(word);
+    bool result = gc.check(word);
 
     if (result) {
-        bool print_dot = false;
-        for (int i = 3; i < argc; ++i) {
-            print_dot = print_dot || strcmp(argv[i], "--dot") == 0;
-        }
-
-        if (print_dot) {
-            std::cout << gr.tree() << std::endl;
+        if (has_argument(argc, argv, "--dot")) {
+            std::cout << gc.build_tree() << std::endl;
         }
         else {
-            gr.show_table();
+            gc.show_table(has_argument(argc, argv, "--csv"));
         }
     }
 
