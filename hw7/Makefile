@@ -9,10 +9,10 @@ CFG_SOURCES = $(wildcard ../lib/cfg/src/*)
 
 QMAKE_MAKEFILE = Makefile.hw7
 
-EXEC: %(QMAKE_MAKEFILE) $(CYK_SOURCES) $(CFG_SOURCES)
+$(EXEC): $(QMAKE_MAKEFILE) $(CYK_SOURCES) $(CFG_SOURCES)
 	qmake && make -j $$(nproc) -f $(QMAKE_MAKEFILE); \cd -
 
-%(QMAKE_MAKEFILE):
+$(QMAKE_MAKEFILE):
 	qmake
 
 GRAMMAR_EXT=".gr"

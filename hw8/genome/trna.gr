@@ -1,0 +1,13 @@
+S
+S = A S1 C | G S1 T
+S1 = A S2 C | G S2 T
+S2 = A S2 C | G S2 T | F F F
+F = A F1 C | G F1 T
+F1 = A F2 C | G F2 T
+F2 = A F2 C | G F2 T | L
+L = Q Q | Q Q Q | Q Q Q Q
+Q = A | C | G | T
+A = 'a'
+C = 'c'
+G = 'g'
+T = 't'

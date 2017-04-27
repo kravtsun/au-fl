@@ -5,12 +5,7 @@ CONFIG -= qt
 
 SOURCES += src/main.cpp
 
-INCLUDEPATH += src/
-
 QMAKE_CXXFLAGS += -Wall -Wconversion
-
-DISTFILES += \
-    test/example.gr
 
 CFGPATH = $$PWD/../../lib/cfg
 

@@ -33,7 +33,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+lib/pyfsa
 lib64/
 parts/
 sdist/
@@ -186,3 +186,5 @@ build
 
 *.o
 bin
+*.a
+
