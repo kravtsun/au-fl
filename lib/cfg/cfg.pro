@@ -53,3 +53,6 @@ SOURCES += \
 QMAKE_CLEAN += lib$${TARGET}.a
 
 QMAKE_CXXFLAGS += -Wall -Wconversion
+
+QMAKE_CXXFLAGS_RELEASE += -O3
+#QMAKE_CXXFLAGS_DEBUG += -O0 -ggdb

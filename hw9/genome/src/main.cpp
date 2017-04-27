@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
     gr.normalize();
     assert(gr.isNormal());
     GrammarChecker gc(gr);
+    gr.print_rules();
     if (has_argument(argc, argv, "--verbose")) {
         gr.print_rules();
     }

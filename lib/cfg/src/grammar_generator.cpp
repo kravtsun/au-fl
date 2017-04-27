@@ -13,6 +13,7 @@ GrammarGenerator::GrammarGenerator(const GrammarChecker &gc, const Graph gr)
         for (auto const &p : gr_.edges().at(from)) {
             vertex_t to = p.first;
             char c = p.second;
+            assert(from >= 0 && to >= 0);
             st &from_to_tokens = d_.at(from).at(to);
             std::copy(all(gc_.symbol_rules_.at(c)),
                       std::inserter(from_to_tokens, from_to_tokens.end()));
@@ -29,8 +30,6 @@ GrammarGenerator::GrammarGenerator(const GrammarChecker &gc, const Graph gr)
 
 GrammarGenerator::generated_container GrammarGenerator::floyd() {
     const int n = gr_.size();
-    int phases_limit = 100;
-    bool fl = true;
     auto step = [this](const st&l, const st &r, st &res) -> void {
         ptt p;
         forit(lit, l) {
@@ -46,7 +45,11 @@ GrammarGenerator::generated_container GrammarGenerator::floyd() {
         }
     };
 
-    while (phases_limit-- && fl) {
+    int it = 0;
+    bool fl = true;
+    while (fl) {
+        printf("it = %d\n", it);
+        it++;
         fl = false;
         forn(k, n) {
             forn(i, n) {
@@ -54,11 +57,12 @@ GrammarGenerator::generated_container GrammarGenerator::floyd() {
                 if (lst.empty()) continue;
                 forn(j, n) {
                     auto const &rst = d_[k][j];
-                    st s = rst;
+                    if (rst.empty()) continue;
+                    st s = d_[i][j];
                     step(lst, rst, s);
                     if (s != d_[i][j]) {
                         fl = true;
-                        std::swap(d_[i][j], s);
+                        d_[i][j] = s;
                     }
                 }
             }
