@@ -24,7 +24,6 @@ int main(int argc, char **argv) {
     gr.normalize();
     assert(gr.isNormal());
     GrammarChecker gc(gr);
-    gr.print_rules();
     if (has_argument(argc, argv, "--verbose")) {
         gr.print_rules();
     }
@@ -36,7 +35,7 @@ int main(int argc, char **argv) {
 
     auto v = gg.floyd();
 
-    std::copy(all(v), std::ostream_iterator<typeof(v.front())>(std::cout));
+    std::copy(all(v), std::ostream_iterator<GrammarGenerator::generated>(std::cout));
 
     return 0;
 }

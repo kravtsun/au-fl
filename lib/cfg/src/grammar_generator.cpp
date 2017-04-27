@@ -28,7 +28,7 @@ GrammarGenerator::GrammarGenerator(const GrammarChecker &gc, const Graph gr)
     }
 }
 
-GrammarGenerator::generated_container GrammarGenerator::floyd() {
+GrammarGenerator::generated_container GrammarGenerator::floyd(bool verbose) {
     const int n = gr_.size();
     auto step = [this](const st&l, const st &r, st &res) -> void {
         ptt p;
@@ -48,7 +48,9 @@ GrammarGenerator::generated_container GrammarGenerator::floyd() {
     int it = 0;
     bool fl = true;
     while (fl) {
-        printf("it = %d\n", it);
+        if (verbose) {
+            std::cerr << "it = " << std::endl;
+        }
         it++;
         fl = false;
         forn(k, n) {

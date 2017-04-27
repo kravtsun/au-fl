@@ -6,7 +6,7 @@
 * qmake (tested on version installed with `sudo apt-get install qt5-default`
 
 ## USAGE
-run `make` and `genome/genome <file-with-grammar> <file-with-graph> [--dot|--csv]`. 
+run `qmake && make -f Makefile.hw9` and `genome/genome <file-with-grammar> <file-with-graph> [--dot|--csv]`. 
 ### Options:
 * `--dot` - get in stdout CSV version of non-terminals which match on input sequence (and some additional info).
 * `--csv` - review grammar rules at Chomsky normal form.
@@ -22,5 +22,10 @@ Then on the following `m` lines - edges' description in format: `from to c`, whe
 
 ## Grammar file syntax
 Following the same rules as in the previous homework.
+
+## trna search
+In order to do search tRNA in metagenome set <some-graph> you can run
+``` qmake && make -f Makefile.hw9 && genome/genome genome/trna_hom.gr <some-graph>```
+
 
 

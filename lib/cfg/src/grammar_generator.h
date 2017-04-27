@@ -51,7 +51,7 @@ public:
 
     GrammarGenerator(const GrammarChecker &gc, const Graph gr);
 
-    generated_container floyd();
+    generated_container floyd(bool verbose=false);
 
 private:
     vvst d_;
