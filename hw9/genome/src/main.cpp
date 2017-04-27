@@ -14,7 +14,7 @@ bool has_argument(int argc, char **argv, const char *args) {
 
 int main(int argc, char **argv) {
     if (argc < 3) {
-        std::cerr << "USAGE: " << argv[0] << " grammar_filepath graph_filepath [--dot|--csv|--verbose]" << std::endl;
+        std::cerr << "USAGE: " << argv[0] << " grammar_filepath graph_filepath [--verbose]" << std::endl;
         return 1;
     }
 
