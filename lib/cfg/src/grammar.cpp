@@ -41,9 +41,28 @@ bool Grammar::isNormal() const {
 }
 
 void Grammar::print_rules() {
-    std::cout << "START: " << start_name_ << std::endl;
-    for (auto const &r : rules_) {
-        std::cout << *r.left() << " = " << r.right() << std::endl;
+    auto comp = [](const Rule &l, const Rule &r) -> bool {
+        return l.left()->str() < r.left()->str();
+    };
+    std::vector<Rule> vrules(all(rules_));
+    sort(all(vrules), comp);
+    std::cout << start_name_ << std::endl;
+    forit(rit, vrules) {
+        std::string leftstr = rit->left()->str();
+        std::cout << leftstr << " =";
+        while (true) {
+            for (auto const &t : rit->right()) {
+                std::cout << " " << *t;
+            }
+            auto next = rit;
+            next++;
+            if (next == vrules.end() || next->left()->str() != leftstr) {
+                break;
+            }
+            rit = next;
+            std::cout << " |";
+        }
+        std::cout << std::endl;
     }
 }
 

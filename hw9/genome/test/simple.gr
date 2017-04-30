@@ -1,0 +1,7 @@
+S
+S = A B
+B = C T | A G
+A = 'a'
+C = 'c'
+G = 'g'
+T = 't'

@@ -1,6 +1,5 @@
 TEMPLATE = subdirs
 CONFIG -= core gl gui
-MAKEFILE = Makefile.hw8
 
 SUBDIRS = \
     cfg \

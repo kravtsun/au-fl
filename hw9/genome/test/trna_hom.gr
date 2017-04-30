@@ -1,0 +1,27 @@
+S
+A = 'a'
+C = 'c'
+F = A F3 | G F4
+F1 = G F12 | A F11
+F11 = F2 C
+F12 = F2 T
+F2 = Q L2 | G F22 | A F21 | Q Q | Q L1
+F21 = F2 C
+F22 = F2 T
+F3 = F1 C
+F4 = F1 T
+G = 'g'
+L1 = Q Q
+L2 = Q L3
+L3 = Q Q
+Q = 'g' | 't' | 'c' | 'a'
+S = A S3 | G S4
+S1 = A S11 | G S12
+S11 = S2 C
+S12 = S2 T
+S2 = A S21 | F S23 | G S22
+S21 = S2 C
+S22 = S2 T
+S23 = F F
+S3 = S1 C
+S4 = S1 T
