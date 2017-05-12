@@ -1,11 +1,11 @@
 ## REQUIREMENTS
 * Ubuntu 16.04
 * GCC
-* qmake (tested on version installed with `sudo apt-get install qt5-default`)
+* make
 
 ## USAGE
 Run 
-```qmake && make && genome/genome <file-with-grammar> <file-with-graph>```
+```make && ./genome <file-with-grammar> <file-with-graph>```
 
 ## Graph file syntax
 First line: two numbers `n` and `m`:
@@ -18,7 +18,7 @@ Then on the following `m` lines - edges' description in format: `from to c`, whe
 Example is stored with extension `*.g` in folder `genome/test`
 
 ## Grammar file syntax
-Following the same rules as in the previous homework. Examples are stored in folder `genome/test`
+Following the same rules as in the previous homework. Examples are stored in folder `test`
 
 ## t-RNA search
 In order to do search tRNA in metagenome set <some-graph> you can run
