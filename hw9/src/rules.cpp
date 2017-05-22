@@ -21,3 +21,27 @@ std::ostream &operator<<(std::ostream &os, const Alternative &rhs) {
     //        std::for_each(rhs.cbegin(), rhs.cend(), f);
     return os;
 }
+
+Rule::Rule()
+    : left_(nullptr)
+    , alternative_()
+{}
+
+Rule::Rule(TokenType left, const Alternative &alternative)
+    : left_(left)
+    , alternative_(alternative)
+{
+    assert(left == nullptr || left->isNonTerminal());
+}
+
+TokenType Rule::left() const {
+    return left_;
+}
+
+const Alternative &Rule::right() const {
+    return alternative_;
+}
+
+Rule::operator bool() const {
+    return left_ != nullptr && !alternative_.empty();
+}

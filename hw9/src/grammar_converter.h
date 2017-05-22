@@ -13,66 +13,22 @@ public:
 
     void convertToChomsky();
 
-    const Rules &rules() const {
-        return rules_;
-    }
+    const Rules &rules() const;
 
 private:
     std::string start_name_;
     Rules rules_;
 
     struct Namer {
-        Namer(const Rules &rules)
-            : names_(all_non_terminals_names(rules))
-            , current_name_("A")
-        {}
+        Namer(const Rules &rules);
 
-        std::string next_name(const std::string &base) {
-#if 0
-            bool fl = false;
-            for (auto it = current_name_.rbegin(); it != current_name_.rend(); it++) {
-                if (*it != 'Z') {
-                    (*it)++;
-                    fl = true;
-                }
-            }
-            if (!fl) {
-                current_name_.assign(current_name_.size() + 1, 'A');
-            }
-            if (names_.count(current_name_) == 0) {
-                names_.insert(current_name_);
-                return current_name_;
-            }
-#else
-            for (int i = 1; ; ++i) {
-                std::string s = base + std::to_string(i);
-                if (names_.count(s) == 0) {
-                    names_.insert(s);
-                    return s;
-                }
-            }
-#endif
-            return next_name(base);
-        }
+        std::string next_name(const std::string &base);
 
     private:
         std::set<std::string> names_;
         std::string current_name_;
 
-        static std::set<std::string> all_non_terminals_names(const Rules &rules) {
-            std::set<std::string> res;
-            for (auto const &r : rules) {
-                TokenType t = r.left();
-                assert(t && (bool)(*t));
-                res.insert(t->str());
-                for (auto const & t : r.right()) {
-                    if (t->isNonTerminal()) {
-                        res.insert(t->str());
-                    }
-                }
-            }
-            return res;
-        }
+        static std::set<std::string> all_non_terminals_names(const Rules &rules);
     } namer_;
 
     void remove_long_productions();

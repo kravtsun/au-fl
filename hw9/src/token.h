@@ -25,35 +25,21 @@ struct Token {
     Token(const Token &rhs) = delete;
 
     static bool isEpsilon(const std::string &s);
-    bool isEpsilon() const {
-        return isEpsilon(s_);
-    }
+    bool isEpsilon() const;
 
     static bool isTerminal(const std::string &s);
-    bool isTerminal() const {
-        return isTerminal(s_);
-    }
+    bool isTerminal() const;
 
-    static bool isNonTerminal(const std::string &s) {
-        return !isEpsilon(s) && !isTerminal(s);
-    }
-    bool isNonTerminal() const {
-        return isNonTerminal(s_);
-    }
+    static bool isNonTerminal(const std::string &s);
+    bool isNonTerminal() const;
 
-    const std::string &str() const {
-        return s_;
-    }
+    const std::string &str() const;
 
-    virtual std::string type() const {
-        return "Token";
-    }
+    virtual std::string type() const;
 
     friend std::ostream &operator<<(std::ostream &os, const Token &token);
 
-    operator bool() const {
-        return !s_.empty();
-    }
+    operator bool() const;
 
 protected:
     std::string s_;
@@ -66,9 +52,7 @@ protected:
 using TokenType = std::shared_ptr<Token>;
 
 struct Terminal : public Token {
-    std::string type() const override {
-        return "Terminal";
-    }
+    std::string type() const override;
 
 protected:
     Terminal(const std::string &s) : Token(s) {}
@@ -76,13 +60,9 @@ protected:
 };
 
 struct NonTerminal : public Token {
-    std::string type() const override {
-        return "Nonterminal";
-    }
+    std::string type() const override;
 
-    friend std::istream& operator>>(std::istream &is, NonTerminal &rhs) {
-        return is >> rhs.s_;
-    }
+    friend std::istream& operator>>(std::istream &is, NonTerminal &rhs);
 
 protected:
     NonTerminal(const std::string &s) : Token(s) {}
@@ -90,44 +70,27 @@ protected:
 };
 
 struct Epsilon : public Token {
-    Epsilon() : Token(EPSILON) {}
-    std::string type() const override {
-        return "eps";
-    }
+    Epsilon();
+    std::string type() const override;
 };
 
 struct TokenFactory {
     struct TokenTypeComp {
-        bool operator()(const TokenType &lhs, const TokenType &rhs) const {
-            return lhs->str() < rhs->str();
-        }
+        bool operator()(const TokenType &lhs, const TokenType &rhs) const;
     };
 
     struct TokenTypePairComp {
-        bool operator()(const std::pair<TokenType, TokenType> &lhs, const std::pair<TokenType, TokenType> &rhs) const {
-            if (lhs.first->str() != rhs.first->str()) {
-                return lhs.first->str() < rhs.first->str();
-            }
-            return lhs.second->str() < rhs.second->str();
-        }
+        bool operator()(const std::pair<TokenType, TokenType> &lhs, const std::pair<TokenType, TokenType> &rhs) const;
     };
 
-    static const auto &all_non_terminals() {
-        return non_terminals;
-    }
+    static const std::set<TokenType, TokenTypeComp>&all_non_terminals();
 
-    static int non_terminal_index(const TokenType &t) {
-        assert(t->isNonTerminal());
-        auto comp = [&t](const TokenType &tt) -> bool { return tt->str() == t->str(); };
-        auto it = std::find_if(all(non_terminals), comp);
-        return (int)(std::distance(non_terminals.begin(), it));
-    }
+    static int non_terminal_index(const TokenType &t);
 
     static TokenType factory(const std::string &);
 private:
     static std::unordered_map<std::string, TokenType> map_;
     static std::set<TokenType, TokenTypeComp> non_terminals;
-    // TODO: deal with cases when nonterminals' names start or end with '
 };
 
 

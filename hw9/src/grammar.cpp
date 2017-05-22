@@ -71,3 +71,11 @@ void Grammar::normalize() {
     gc.convertToChomsky();
     rules_ = gc.rules();
 }
+
+const std::string &Grammar::start_name() const {
+    return start_name_;
+}
+
+const Rules &Grammar::rules() const {
+    return rules_;
+}

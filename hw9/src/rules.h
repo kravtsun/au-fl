@@ -15,30 +15,16 @@ struct Rule {
 
     Rule(const Rule &rhs) = default;
 
-    Rule()
-        : left_(nullptr)
-        , alternative_()
-    {}
+    Rule();
 
     // TODO move optimization.
-    Rule(TokenType left, const Alternative &alternative)
-        : left_(left)
-        , alternative_(alternative)
-    {
-        assert(left == nullptr || left->isNonTerminal());
-    }
+    Rule(TokenType left, const Alternative &alternative);
 
-    operator bool() const {
-        return left_ != nullptr && !alternative_.empty();
-    }
+    operator bool() const;
 
-    TokenType left() const {
-        return left_;
-    }
+    TokenType left() const;
 
-    const Alternative &right() const {
-        return alternative_;
-    }
+    const Alternative &right() const;
 
 //    bool isEpsilonRule() const {
 //        return std::all_of(all(alternative_), [](const TokenType &t) -> bool { return t->isEpsilon(); });

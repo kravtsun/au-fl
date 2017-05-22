@@ -10,28 +10,11 @@ struct Graph {
     using edge_vector = std::vector<edge_t>;
     using vev = std::vector<edge_vector>;
 public:
-    friend std::istream &operator>>(std::istream &is, Graph &gr) {
-        gr.edges_.clear();
-        int n, m;
-        is >> n >> m;
-        gr.edges_.resize(n);
-        forn(ei, m) {
-            vertex_t a, b;
-            char c;
-            is >> a >> b >> c;
-            a--, b--;
-            gr.edges_[a].emplace_back(b, c);
-        }
-        return is;
-    }
+    friend std::istream &operator>>(std::istream &is, Graph &gr);
 
-    const vev &edges() const {
-        return edges_;
-    }
+    const vev &edges() const;
 
-    int size() const {
-        return (int)edges_.size();
-    }
+    int size() const;
 private:
     vev edges_;
 };

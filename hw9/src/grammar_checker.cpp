@@ -155,3 +155,12 @@ void GrammarChecker::show_table(bool print_csv) {
         }
     }
 }
+
+int GrammarChecker::istart() const {
+    return token_map_.at(start_token_);
+}
+
+int GrammarChecker::non_terminal_index(const TokenType &t) {
+    assert(t->isNonTerminal());
+    return token_map_.at(t);
+}

@@ -121,3 +121,38 @@ GrammarGenerator::generated_container GrammarGenerator::floyd(bool verbose) {
     }
     return res;
 }
+
+typedef GrammarGenerator::generated generated;
+typedef GrammarGenerator::vertex_t vertex_t;
+
+generated::generated(vertex_t v1, vertex_t v2, TokenType n)
+    : v1_(v1)
+    , v2_(v2)
+    , n_(n)
+{}
+
+vertex_t generated::v1() const {
+    return v1_;
+}
+
+vertex_t generated::v2() const {
+    return v2_;
+}
+
+TokenType generated::n() const {
+    return n_;
+}
+
+std::ostream &operator<<(std::ostream &os, const generated &rhs) {
+    return os << "(" << rhs.v1() + 1 << ", " << rhs.v2() + 1 << ", " << *rhs.n() << ")\n";
+}
+
+bool generated::Comp::operator()(const generated &lhs, const generated &rhs) {
+    if (lhs.v1_ != rhs.v1_) {
+        return lhs.v1_ < rhs.v1_;
+    }
+    if (lhs.v2_ != rhs.v2_) {
+        return lhs.v2_ < rhs.v2_;
+    }
+    return lhs.n_->str() < rhs.n_->str();
+}

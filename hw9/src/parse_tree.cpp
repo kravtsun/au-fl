@@ -4,7 +4,7 @@ using Node = ParseTree::Node;
 
 int ParseTree::node_cnt_;
 
-Node::Node(const TokenType &token, std::__cxx11::string str, int i, int j)
+Node::Node(const TokenType &token, std::string str, int i, int j)
     : token_(token)
     , str_(str)
     , i_(i)

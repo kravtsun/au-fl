@@ -22,14 +22,9 @@ public:
     void show_table(bool print_csv=false);
 
 private:
-    int istart() const {
-        return token_map_.at(start_token_);
-    }
+    int istart() const;
 
-    int non_terminal_index(const TokenType &t) {
-        assert(t->isNonTerminal());
-        return token_map_.at(t);
-    }
+    int non_terminal_index(const TokenType &t);
 
 private:
     // Non terminals.

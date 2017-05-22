@@ -14,6 +14,7 @@
 #include "grammar_checker.h"
 
 class GrammarGenerator {
+public:
     using vertex_t = Graph::vertex_t;
 #if MAX_TOKENS
     using bitset_t = std::bitset<MAX_TOKENS>;
@@ -26,42 +27,21 @@ class GrammarGenerator {
     using vst = ::vst;
     using vvst = ::vvst;
 #endif
-public:
     class generated {
     public:
-        generated(vertex_t v1, vertex_t v2, TokenType n)
-            : v1_(v1)
-            , v2_(v2)
-            , n_(n)
-        {}
+        generated(vertex_t v1, vertex_t v2, TokenType n);
 
-        vertex_t v1() const {
-            return v1_;
-        }
+        vertex_t v1() const;
 
-        vertex_t v2() const {
-            return v2_;
-        }
+        vertex_t v2() const;
 
-        TokenType n() const {
-            return n_;
-        }
+        TokenType n() const;
 
         struct Comp {
-            bool operator()(const generated &lhs, const generated &rhs) {
-                if (lhs.v1_ != rhs.v1_) {
-                    return lhs.v1_ < rhs.v1_;
-                }
-                if (lhs.v2_ != rhs.v2_) {
-                    return lhs.v2_ < rhs.v2_;
-                }
-                return lhs.n_->str() < rhs.n_->str();
-            }
+            bool operator()(const generated &lhs, const generated &rhs);
         };
 
-        friend std::ostream &operator<<(std::ostream &os, const generated &rhs) {
-            return os << "(" << rhs.v1() + 1 << ", " << rhs.v2() + 1 << ", " << *rhs.n() << ")\n";
-        }
+        friend std::ostream &operator<<(std::ostream &os, const generated &rhs);
     private:
         vertex_t v1_, v2_;
         TokenType n_;

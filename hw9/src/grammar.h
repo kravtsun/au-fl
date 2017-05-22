@@ -16,13 +16,9 @@ public:
 
     void normalize();
 
-    const std::string &start_name() const {
-        return start_name_;
-    }
+    const std::string &start_name() const;
 
-    const Rules &rules() const {
-        return rules_;
-    }
+    const Rules &rules() const;
 private:
     std::string start_name_;
     Rules rules_;
